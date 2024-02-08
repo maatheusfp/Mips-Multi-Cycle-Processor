@@ -1,6 +1,6 @@
 I) Componentes:
 
-Unidade de Processamento
+CPU
 
 
 Registrador PC	
@@ -12,76 +12,10 @@ mux 1
 mux 2
 
 
-Memory
-
-
-Registrador MDR (Memory Data Register)
-
-
-Registrador IR
-
-
 mux 3
 
 
 mux 4
-
-
-Word Cracker
-
-
-Sign Extend 8-32
-
-
-Registers
-
-
-Registrador A	
-
-
-Registrador B	
-
-
-Load size	
-
-
-Store size	
-
-
-Control Unit
-
-
-ALU
-
-
-ALU Out
-
-
-The box	
-
-
-The box 
-
-
-Mult	
-
-
-Div	
-
-
-Registrador Address RG	
-
-
-Registrador EPC	
-
-
-Registrador High	
-
-
-Registrador Low	
-
-
-Shift Left 2
 
 
 mux 5
@@ -111,13 +45,71 @@ mux 12
 mux 13
 
 
+ok Memory
+
+
+Registrador MDR (Memory Data Register)
+
+
+ok Registrador IR
+
+
+ok Registrador de Deslocamento
+
+
+Word Cracker
+
+
+Sign Extend 8-32
+
+
+ok Registers
+
+
+Registrador A	
+
+
+Registrador B	
+
+
+Load size	
+
+
+Store size	
+
+
+Control Unit
+
+
+ok ALU
+
+
+ALU Out
+
+
+Mult	
+
+
+Div	
+
+
+Registrador EPC	
+
+
+Registrador High	
+
+
+Registrador Low	
+
+
+Shift Left 2
+
+
 ALU Control
 
 
 Sign extend reverse 32-5
 
-
-Load Size
 
 -----------------------
 
