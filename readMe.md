@@ -1,9 +1,45 @@
 I) Componentes:
 
-Unidade de Processamento	
+Unidade de Processamento
 
 
-Descrição das Entidades	
+Registrador PC	
+
+
+mux 1
+
+
+mux 2
+
+
+Memory
+
+
+Registrador MDR (Memory Data Register)
+
+
+Registrador IR
+
+
+mux 3
+
+
+mux 4
+
+
+Word Cracker
+
+
+Sign Extend 8-32
+
+
+Registers
+
+
+Registrador A	
+
+
+Registrador B	
 
 
 Load size	
@@ -12,7 +48,13 @@ Load size
 Store size	
 
 
-Controlador	
+Control Unit
+
+
+ALU
+
+
+ALU Out
 
 
 The box	
@@ -27,25 +69,10 @@ Mult
 Div	
 
 
-Registrador PC	
-
-
 Registrador Address RG	
 
 
 Registrador EPC	
-
-
-Registrador A	
-
-
-Registrador B	
-
-
-Registrador ALUOut	
-
-
-Registrador MDR (Memory Data Register)	
 
 
 Registrador High	
@@ -54,6 +81,43 @@ Registrador High
 Registrador Low	
 
 
+Shift Left 2
+
+
+mux 5
+
+
+mux 6
+
+
+mux 7
+
+
+mux 8
+
+
+mux 9
+
+
+mux 10
+
+
+mux 11
+
+
+mux 12
+
+
+mux 13
+
+
+ALU Control
+
+
+Sign extend reverse 32-5
+
+
+Load Size
 
 
 II) Instruções:
