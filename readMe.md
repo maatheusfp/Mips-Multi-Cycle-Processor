@@ -119,6 +119,7 @@ Sign extend reverse 32-5
 
 Load Size
 
+-----------------------
 
 II) Instruções:
 
@@ -224,6 +225,8 @@ j
 
 
 jal
+
+-------------------------
 
 III) Descrição das Operações e dos Estados de Controle:
 
