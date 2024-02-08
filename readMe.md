@@ -25,6 +25,8 @@ II) Instruções:
 https://drive.google.com/file/d/1IJCvickKM6niHK258HWu5_G05WjWhzXH/view - pág 7
 
 1. Operações do tipo R:
+
+
 add
 
 and
