@@ -121,8 +121,86 @@ wire DivtoDivCtrlMUX [31:0];
 wire MulttoMultCtrlMUX [31:0];
 wire MulttoDivCtrlMUX [31:0];
 
+// AluOut:
+wire ALUOuttoPCSourceMUX [31:0];
+wire ALUOuttoMemtoRegMUX [31:0]; 
+
+// EPC: 
+wire EPCtoPCSourceMUX [31:0]; // não tenho ctz 
+
+// PC:
+wire PCtoEND [31:0];
+
+// DIV: 
+wire DivtoDivCtrlMUX [31:0];
+wire DivtoMultCtrlMUX [31:0];
+
+// Mult:
+wire MulttoDivCtrlMUX [31:0];
+wire MulttoMultCtrlMUX [31:0]; 
+
+// HI/LO:
+wire HItoMemtoRegMUX; // nao lembro a qtd de bits 
+wire LOtoMemtoRegMUX; 
+
+// SHIFTLEFT:
+wire SLtoAluSrcBMUX [31:0];
+wire SLtoPCSourceMYX [31:0];
+
+// END:
+wire ENDtoEPC [31:0]; // nao tenho ctz 
+
+// SignExtend(16 - 32):
+wire SE16_32toALUsrcB [31:0];
+wire SE16_32SL [31:0];
+
+// SignExtend (1 - 32);
+wire SE1_32toMemtoRegMUX [31:0];
+
+// SignExtend (8-32);
+wire SE8_32toPCSource [31:0];
+
+// MUXES:
+// IorD:
+wire IorDMUXtoMem [31:0];
+
+// WriteDataCtrlMUX:
+wire WriteDataCtrlMUXtoMem [31:0] // nao tenho ctz;
+
+// RegDst;
+wire RegDstMUXtoIR [5:0];
+
+// MemtoReg;
+wire MemtoRegMUXtoIR [31:0]; 
+
+// ReduceCtrl:
+wire ReduceCtrlMUXto32_5 [31:0];
+
+// ShiftCtrl:
+wire ShiftCtrlMUXtoRD [15:0];
+
+// EntryCtrl:
+wire EntryCtrlMUXtoRD [15:0];
+
+// Div/MultCtrl:
+wire DivCtrlMUXtoHI;
+wire MultCtrlMUXtoLO; 
+
+// ALUSrcA/B:
+wire ALUSrcAMUXtoALU;
+wire ALUSrcBMUXtoALU;
+
+// PCSource:
+wire PCSourceMUXtoPC [31:0];
+
+// BranchControl:
+wire BranchCtrlMUXtoWriteCondAND;
+
+// Ignore:
+wire IgnoreMUXtoUC; 
+
+
 // portas logicas
-//         .
 //         .
 //         .
 
