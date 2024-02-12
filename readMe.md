@@ -1,5 +1,14 @@
 I) Componentes:
 
+Memory OK
+
+
+Registrador IR OK
+
+
+Registrador de Deslocamento OK
+
+
 CPU
 
 
@@ -45,16 +54,7 @@ mux 12
 mux 13
 
 
-ok Memory
-
-
 Registrador MDR (Memory Data Register)
-
-
-ok Registrador IR
-
-
-ok Registrador de Deslocamento
 
 
 Word Cracker
