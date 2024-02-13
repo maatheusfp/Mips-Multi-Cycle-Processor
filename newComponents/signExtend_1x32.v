@@ -1,17 +1,17 @@
 module signExtend_1x32 (
-  input LT, // LT = Less Than. does it has to be input wire?
-  output reg [31:0] mux // output reg = variable in verilog to be used in a always loops
+  input wire LTtoSignExtend, // LTtoSignExtend = Less Than. does it has to be input wire?
+  output reg [31:0] SE1_32toMemtoRegMUX // output reg = variable in verilog to be used in a always loops
 );
 
   always @(*) 
   begin
-    if (LT == 1)  
+    if (LTtoSignExtend == 1)  
         begin
-            mux = {31'b0, LT};  // Set the output to 00000000000000000000000000000001
+            SE1_32toMemtoRegMUX = {31'b0, LTtoSignExtend};  // Set the output to 00000000000000000000000000000001
         end 
     else 
         begin
-            mux = 0;
+            SE1_32toMemtoRegMUX = 0;
         end
   end
 
@@ -22,25 +22,25 @@ endmodule
 // `timescale 1ns / 1ps
 
 // module testbench;
-//     reg LT;
-//     wire [31:0] mux;
+//     reg LTtoSignExtend;
+//     wire [31:0] SE1_32toMemtoRegMUX;
 
 //     // Instanciar o módulo que queremos testar
 //     signExtend_1x32 uut (
-//         .LT(LT), 
-//         .mux(mux)
+//         .LTtoSignExtend(LTtoSignExtend), 
+//         .SE1_32toMemtoRegMUX(SE1_32toMemtoRegMUX)
 //     );
 
 //     initial begin
-//         // Teste com LT = 1
-//         LT = 1;
+//         // Teste com LTtoSignExtend = 1
+//         LTtoSignExtend = 1;
 //         #10; // Espera 10 unidades de tempo
-//         $display("LT = %b, mux = %b", LT, mux);
+//         $display("LTtoSignExtend = %b, SE1_32toMemtoRegMUX = %b", LTtoSignExtend, SE1_32toMemtoRegMUX);
 
-//         // Teste com LT = 0
-//         LT = 0;
+//         // Teste com LTtoSignExtend = 0
+//         LTtoSignExtend = 0;
 //         #10; // Espera 10 unidades de tempo
-//         $display("LT = %b, mux = %b", LT, mux);
+//         $display("LTtoSignExtend = %b, SE1_32toMemtoRegMUX = %b", LTtoSignExtend, SE1_32toMemtoRegMUX);
 
 //         // Finaliza a simulação
 //         $finish;
@@ -48,5 +48,5 @@ endmodule
 // endmodule
 
 
-// LT = 1, mux = 01111111111111111111111111111111
-// LT = 0, mux = 00000000000000000000000000000000
+// LTtoSignExtend = 1, SE1_32toMemtoRegMUX = 01111111111111111111111111111111
+// LTtoSignExtend = 0, SE1_32toMemtoRegMUX = 00000000000000000000000000000000
