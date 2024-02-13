@@ -26,6 +26,7 @@ wire divCtrl [1:0];
 wire multCtrl [1:0];
 wire ShiftCtrl [1:0];
 wire ignore [1:0];
+wire BranchCtrl [1:0];
 
 // sinais Ctrl
 wire SHIPTOp3 [1:0];
@@ -204,6 +205,8 @@ wire PCSourceMUXtoPC [31:0];
 
 // BranchControl:
 wire BranchCtrlMUXtoWriteCondAND;
+wire LTorZero_toBranchCtrl;
+wire GTorLT_toBranchCtrl;
 
 // Ignore:
 wire IgnoreMUXtoUC; 
