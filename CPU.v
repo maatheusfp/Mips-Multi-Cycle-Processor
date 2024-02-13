@@ -160,6 +160,7 @@ wire SE1_32toMemtoRegMUX [31:0];
 // SignExtend (8-32);
 wire SE8_32toPCSource [31:0];
 
+------------------------------
 // MUXES:
 // IorD:
 wire IorDMUXtoMem [31:0];
