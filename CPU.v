@@ -199,6 +199,11 @@ wire BranchCtrlMUXtoWriteCondAND;
 // Ignore:
 wire IgnoreMUXtoUC; 
 
+// Registradores padrão
+wire [31:0] reg253; // check how many bits this register has
+wire [31:0] reg254;
+wire [31:0] reg255;
+
 
 // portas logicas
 //         .
