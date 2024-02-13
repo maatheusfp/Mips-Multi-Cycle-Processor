@@ -167,6 +167,7 @@ wire SE1_32toMemtoRegMUX [31:0];
 wire SE8_32toPCSource [31:0];
 
 // SignExtend (32 - 5);
+wire [31:0] rdcCtrlMUX_toSE32_5;
 wire se32x5ToShift_ctrlMUX [4:0] ;
 
 ------------------------------
