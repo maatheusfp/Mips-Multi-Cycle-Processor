@@ -21,7 +21,7 @@ wire ALUSrcA [1:0];
 wire ALUsrcB [3:0];
 wire IorD [5:0];
 wire RegDst [2:0];
-wire MemtoReg [8:0];
+wire MemtoReg [3:0];
 
 // sinais Ctrl
 wire SHIPTOp3 [1:0];
@@ -205,6 +205,7 @@ wire [31:0] reg254;
 wire [31:0] reg255;
 wire [31:0] reg31;
 wire [31:0] reg29;
+wire [31:0] reg227;
 
 
 // portas logicas
