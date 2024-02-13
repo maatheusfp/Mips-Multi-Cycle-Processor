@@ -24,6 +24,7 @@ wire RegDst [2:0];
 wire MemtoReg [3:0];
 wire divCtrl [1:0];
 wire multCtrl [1:0];
+wire ShiftCtrl [1:0];
 
 // sinais Ctrl
 wire SHIPTOp3 [1:0];
@@ -69,6 +70,7 @@ wire IR15_0toMUXReg [15:0];
 wire IR15_0toALUControl [15:0];
 wire IR15_0toShiftLeft [15:0];
 wire IR15_0toMUXRD [15:0];
+wire IR10_6toMUXShiftCtrl [4:0];
 
 // Registradores - Falta a quantidade de bits
 wire ReadData1toA [15:0];
@@ -162,6 +164,9 @@ wire SE1_32toMemtoRegMUX [31:0];
 // SignExtend (8-32);
 wire SE8_32toPCSource [31:0];
 
+// SignExtend (32 - 5);
+wire se32x5ToShift_ctrlMUX [4:0] ;
+
 ------------------------------
 // MUXES:
 // IorD:
@@ -210,6 +215,7 @@ wire [31:0] reg31;
 wire [31:0] reg29;
 wire [31:0] reg227;
 wire [31:0] reg4;
+wire [31:0] reg16;
 
 
 // portas logicas
