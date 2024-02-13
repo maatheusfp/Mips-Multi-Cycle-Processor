@@ -25,6 +25,7 @@ wire MemtoReg [3:0];
 wire divCtrl [1:0];
 wire multCtrl [1:0];
 wire ShiftCtrl [1:0];
+wire ignore [1:0];
 
 // sinais Ctrl
 wire SHIPTOp3 [1:0];
