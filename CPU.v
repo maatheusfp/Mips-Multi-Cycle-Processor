@@ -69,7 +69,7 @@ wire IR15_0toSingExtend [15:0];
 wire IR15_0toMUXReg [15:0];
 wire IR15_0toALUControl [15:0];
 wire IR15_0toShiftLeft [15:0];
-wire IR15_0toMUXRD [15:0];
+wire IR15_0toMUXShiftCtrl [15:0];
 wire IR10_6toMUXShiftCtrl [4:0];
 
 // Registradores - Falta a quantidade de bits
