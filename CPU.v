@@ -18,7 +18,7 @@ wire RegWrite;
 // sinais de escolha de fonte de dados
 wire PCSource [3:0];
 wire ALUSrcA [1:0];
-wire ALUsrcB [3:0];
+wire ALUsrcB [1:0];
 wire IorD [5:0];
 wire RegDst [2:0];
 wire MemtoReg [3:0];
@@ -207,6 +207,7 @@ wire [31:0] reg255;
 wire [31:0] reg31;
 wire [31:0] reg29;
 wire [31:0] reg227;
+wire [31:0] reg4;
 
 
 // portas logicas
