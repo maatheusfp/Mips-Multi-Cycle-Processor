@@ -23,6 +23,7 @@ module mux9x1(
             4'b0110: RegDstMUXtoReg = reg227;
             4'b0111: RegDstMUXtoReg = LoadSizetoMemtoRegMUX;
             4'b1000: RegDstMUXtoReg = ALUOuttoRDtoIorDMUX;
+            default: RegDstMUXtoReg = 32'h0; // Caso padrão
         endcase
     end
 endmodule
