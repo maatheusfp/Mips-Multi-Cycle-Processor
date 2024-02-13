@@ -20,7 +20,7 @@ wire PCSource [3:0];
 wire ALUSrcA [1:0];
 wire ALUsrcB [3:0];
 wire IorD [5:0];
-wire RegDst [4:0];
+wire RegDst [2:0];
 wire MemtoReg [8:0];
 
 // sinais Ctrl
@@ -168,7 +168,7 @@ wire IorDMUXtoMem [31:0];
 wire WriteDataCtrlMUXtoMem [31:0] // nao tenho ctz;
 
 // RegDst;
-wire RegDstMUXtoIR [5:0];
+wire RegDstMUXtoReg [5:0];
 
 // MemtoReg;
 wire MemtoRegMUXtoIR [31:0]; 
@@ -203,6 +203,8 @@ wire IgnoreMUXtoUC;
 wire [31:0] reg253; // check how many bits this register has
 wire [31:0] reg254;
 wire [31:0] reg255;
+wire [31:0] reg31;
+wire [31:0] reg29;
 
 
 // portas logicas
