@@ -23,7 +23,7 @@ wire IorD [5:0];
 wire RegDst [2:0];
 wire MemtoReg [3:0];
 wire divCtrl [1:0];
-wire multCtrl [1:0];
+wire multCtrl;
 wire ShiftCtrl [1:0];
 wire ignore [1:0];
 wire BranchCtrl [1:0];
