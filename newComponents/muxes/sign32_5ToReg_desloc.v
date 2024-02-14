@@ -1,6 +1,6 @@
 // shiftctrlMUX
 // mux 3x1
-module mux3x1 (
+module sign32_5ToReg_desloc(
     input wire [4:0] se32x5ToShift_ctrlMUX,
     input wire [31:0] reg16;
     input wire [4:0] IR10_6toMUXShiftCtrl;

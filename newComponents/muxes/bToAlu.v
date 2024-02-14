@@ -1,5 +1,5 @@
 // mux 4x1 = mux ALUSrcB
-module mux4x1(
+module bToAlu(
     input [31:0] BtoALUSrcBMUX,
     input [31:0] reg4,
     input [31:0] SE16_32toALUsrcB,

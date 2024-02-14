@@ -1,6 +1,6 @@
 // reduce ctrl mux
 // mux 2x1
-module 2x1 (
+module mdaToSign32_5(
     input wire MDRtoRdcCtrlMUX [31:0],
     input wire BtoRdcCtrlMUX [31:0],
     input wire RdcCtrl,

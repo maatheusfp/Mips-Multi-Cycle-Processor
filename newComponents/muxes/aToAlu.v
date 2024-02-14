@@ -1,5 +1,5 @@
 // mux 2x1
-module mux2x1(
+module aToAlu(
     input wire AtoALUSrcA [15:0],
     input wire PCtoMUX [31:0];,
     input wire ALUSrcA,
