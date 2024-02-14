@@ -146,8 +146,8 @@ wire MulttoDivCtrlMUX [31:0];
 wire MulttoMultCtrlMUX [31:0]; 
 
 // HI/LO:
-wire HItoMemtoRegMUX; // nao lembro a qtd de bits 
-wire LOtoMemtoRegMUX; 
+wire HItoMemtoRegMUX [15:0]; 
+wire LOtoMemtoRegMUX[15:0]; 
 
 // SHIFTLEFT:
 wire SLtoAluSrcBMUX [31:0];
@@ -194,8 +194,8 @@ wire ShiftCtrlMUXtoRD [15:0];
 wire EntryCtrlMUXtoRD [15:0];
 
 // Div/MultCtrl:
-wire DivCtrlMUXtoHI;
-wire MultCtrlMUXtoLO; 
+wire DivCtrlMUXtoHI [31:0];
+wire MultCtrlMUXtoLO [31:0]; 
 
 // ALUSrcA/B:
 wire ALUSrcAMUXtoALU;
