@@ -1,6 +1,9 @@
+// CRESULT = Mudança de resultado (32 bits de entrada), CTRL = Sinal de controle (2 bits de entrada)
+// OUT = Saída (32 bits de saída)
 module Load(
-    input wire [31:0] CRESULT, input wire [1:0] CTRL, #CRESULT = Mudança de resultado (32 bits de entrada), CTRL = Sinal de controle (2 bits de entrada)
-    output reg [31:0] OUT #OUT = Saída (32 bits de saída)
+    input wire [31:0] CRESULT, input wire [1:0] CTRL, 
+    output reg [31:0] OUT 
+   
 );
 
 always @ (*) begin
