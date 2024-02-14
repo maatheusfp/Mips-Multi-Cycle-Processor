@@ -1,6 +1,6 @@
 // mux 2x1
 // mux div/mult cntrl
-module mux2x1(
+module hi(
     input wire [31:0] DivtoDivCtrlMUX,
     input wire [31:0] MulttoDivCtrlMUX,
     input wire divCtrl,

@@ -1,6 +1,6 @@
 // entry ctrl mux
 // mux 3x1
-module mux3x1(
+module aToReg_desloc(
     input wire [15:0] AtoEntryCtrl,
     input wire [15:0] BtoEntryCtrl,
     input wire [15:0] IR15_0toMUXShiftCtrl,

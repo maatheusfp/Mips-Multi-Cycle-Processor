@@ -1,6 +1,6 @@
 // ignore mux
 // mux 2x1
-module 2x1(
+module overflowToControl_unit(
     input 0,
     input wire Overflow,
     input wire ignore

@@ -1,6 +1,6 @@
 // branch ctrl mux
 // mux 4x1
-module 4x1(
+module aluToPc(
     input wire 0, // zero na ALU
     input wire GTtoBranchMUX,
     input wire LTorZero_toBranchCtrl,

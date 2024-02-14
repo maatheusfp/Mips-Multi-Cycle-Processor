@@ -1,5 +1,5 @@
 // mux 5x1
-module mux5x1 (
+module irToReg(
     input wire [31:0] reg31,
     input wire [31:0] reg29,
     input wire [15:0] IR15_0toMUXReg,

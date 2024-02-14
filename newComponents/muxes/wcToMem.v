@@ -1,5 +1,5 @@
 // mux 2x1
-module mux2x1(
+module wcToMem(
     input [31:0] WCtoWriteDataCtrlMUX,
     input [31:0] BtoWriteDataCtrlMUX,
     input wire WriteDataCtrl,

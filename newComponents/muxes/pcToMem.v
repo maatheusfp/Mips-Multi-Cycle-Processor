@@ -1,4 +1,4 @@
-module mux6x1 ( // mux IorD (pc -> mem)
+module pcToMem( // mux IorD (pc -> mem)
   input wire [31:0] PCSource, 
   input wire [31:0] reg253, // check what is the function of this register
   input wire [31:0] reg254, // check what is the function of this register
