@@ -98,7 +98,8 @@ wire ZerotoBranchMUX;
 wire ZerotoALUOR;
 wire LTtoSignExtend;
 wire LTtoALUOR;
-wire GTtoALUPCOR; // esse ta usando o mesmo fio do diagrama, verificar se ta certo
+wire LTtoLTZeroOR;
+wire GTtoALUOR; // esse ta usando o mesmo fio do diagrama, verificar se ta certo
 wire GTtoBranchMUX;
 
 
@@ -136,6 +137,7 @@ wire EPCtoPCSourceMUX [31:0]; // não tenho ctz
 
 // PC:
 wire PCtoEND [31:0];
+wire PCtoIordMUX [31:0];
 
 // DIV: 
 wire DivtoDivCtrlMUX [31:0];
@@ -222,6 +224,19 @@ wire [31:0] reg227;
 wire [31:0] reg4;
 wire [31:0] reg16;
 
+//saida das portas logicas
+wire WriteCondANDtoPCWriteOR; 
+wire PCWriteORtoPC;
+wire LTGTORtoBranchMUX;
+wire LTZerotoBranchMUX;
+
+// portas logicas
+and(BranchCtrlMUXtoWriteCondAND, PCWriteCond, WriteCondANDtoPCWriteOR); // (input, input, output)
+or(WriteCondANDtoPCWriteOR, PCWrite, PCWriteORtoPC);
+or(LTtoALUOR,GTtoALUOR, LTGTORtoBranchMUX);
+or(LTtoLTZeroOR, ZerotoALUOR, LTZerotoBranchMUX);
+
+
 Registrador PC_(
     clock,
     reset, // reset ou Reset?
@@ -234,10 +249,10 @@ Registrador PC_(
 Memoria MEM_(
     clock,
     reset,
-    MemRead, // instanciar!
+    // MemRead
     MemWrite,
-    PCtoMem, // instanciar!
-    MUXWriteData, // instanciar!
+    // PCtoMem, 
+    // MUXWriteData, 
     MemDatatoIR
 );
 
@@ -246,16 +261,8 @@ Instr_Reg IR_(
     reset,
     IRwrite,
     MemDatatoIR,
-    OPCODE, // instanciar!
+    // OPCODE, 
     // resto dos fios de saída bugados no diagrama
     //      .
     //      .
 );
-
-
-// portas logicas
-//         .
-//         .
-
-
-// modulos 
