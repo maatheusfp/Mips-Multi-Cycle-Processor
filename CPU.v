@@ -222,6 +222,36 @@ wire [31:0] reg227;
 wire [31:0] reg4;
 wire [31:0] reg16;
 
+Registrador PC_(
+    clock,
+    reset, // reset ou Reset?
+    PCWrite,
+    PCWriteCond,
+    PCSourceMUXtoPC,
+    PCtoMUX
+);
+
+Memoria MEM_(
+    clock,
+    reset,
+    MemRead, // instanciar!
+    MemWrite,
+    PCtoMem, // instanciar!
+    MUXWriteData, // instanciar!
+    MemDatatoIR
+);
+
+Instr_Reg IR_(
+    clock,
+    reset,
+    IRwrite,
+    MemDatatoIR,
+    OPCODE, // instanciar!
+    // resto dos fios de saída bugados no diagrama
+    //      .
+    //      .
+);
+
 
 // portas logicas
 //         .
