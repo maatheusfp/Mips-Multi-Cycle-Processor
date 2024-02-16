@@ -12,7 +12,12 @@
 `include "newComponents/muxes/pcToMem.v"
 `include "newComponents/muxes/sign32_5ToReg_desloc.v"
 `include "newComponents/muxes/wcToMem.v"
+`include "newComponents/muxes/MemControl.v"
+
 `include "componentesFornecidos/Registrador.vhd"
+`include "componentesFornecidos/Memoria.vhd"
+`include "componentesFornecidos/Instr_Reg.vhd"
+`include "componentesFornecidos/Banco_reg.vhd"
 
 module CPU(
     input wire clock,
@@ -27,7 +32,7 @@ module CPU(
     // sinais de escrita
     wire PCWriteCond;
     wire PCWrite;
-    wire MemWrite; 
+    wire MemWrite_Read;  // lida = 0, escrita = 1
     wire IRwrite; 
     wire RegWrite; 
 
@@ -157,7 +162,7 @@ module CPU(
     wire WriteDataCtrlMUXOut [31:0] // nao tenho ctz;
 
     // RegDst;
-    wire RegDstMUXOut [5:0];
+    wire RegDstMUXOut [4:0];
 
     // MemtoReg;
     wire MemtoRegMUXOut [31:0]; 
@@ -184,6 +189,9 @@ module CPU(
 
     // BranchControl:
     wire BranchCtrlMUXOut;
+
+    // MemControl
+    wire MemControlMUXOut [31:0];
 
     // Ignore:
     wire IgnoreMUXOut; 
@@ -269,22 +277,32 @@ module CPU(
     Memoria MEM_(
         clock,
         reset,
-        // MemRead
-        MemWrite,
-        // PCtoMem, 
-        // MUXWriteData, 
-        MemDatatoIR
+        MemWrite_Read,
+        MemControlMUXOut, 
+        MemOut
     );
 
     Instr_Reg IR_(
         clock,
         reset,
         IRwrite,
-        MemDatatoIR,
-        // OPCODE, 
-        // resto dos fios de saída bugados no diagrama
-        //      .
-        //      .
+        MemOut,
+        IR31_26,
+        IR25_21,
+        IR20_16,
+        IR15_0  //Fica faltando o 10_6 pq nao tem no IR pronto
+    );
+
+    Banco_reg BR(
+        clock,
+        reset,
+        RegWrite,
+        IR25_21,
+        IR20_16,
+        RegDstMUXOut,
+        MemtoRegMUXOut,
+        ReadData1,
+        ReadData2
     );
 
   // muxes
@@ -405,3 +423,11 @@ module CPU(
         WriteDataCtrl,
         WriteDataCtrlMUXOutj
     );
+
+    MemControl MemControlMUX(
+        IorDMUXOut,
+        WriteDataCtrlMUXOut,
+        MemWrite_Read,
+        MemControlMUXOut
+    );
+
