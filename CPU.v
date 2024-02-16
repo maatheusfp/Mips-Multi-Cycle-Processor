@@ -12,6 +12,7 @@
 `include "newComponents/muxes/pcToMem.v"
 `include "newComponents/muxes/sign32_5ToReg_desloc.v"
 `include "newComponents/muxes/wcToMem.v"
+`include "componentesFornecidos/Registrador.vhd"
 
 module CPU(
     input wire clock,
@@ -20,220 +21,271 @@ module CPU(
 
 // sinais de controle: 
 
-// Reset
-wire Reset;
+    // Reset
+    wire Reset;
 
-// sinais de escrita
-wire PCWriteCond;
-wire PCWrite;
-wire MemWrite; 
-wire IRwrite; 
-wire RegWrite; 
+    // sinais de escrita
+    wire PCWriteCond;
+    wire PCWrite;
+    wire MemWrite; 
+    wire IRwrite; 
+    wire RegWrite; 
 
-// sinais de escolha de fonte de dados
-wire PCSource [3:0];
-wire ALUSrcA [1:0];
-wire ALUsrcB [1:0];
-wire IorD [5:0];
-wire RegDst [2:0];
-wire MemtoReg [3:0];
-wire divCtrl [1:0];
-wire multCtrl [1:0];
-wire ShiftCtrl [1:0];
-wire ignore [1:0];
-wire BranchCtrl [1:0];
+    // sinais de escolha de fonte de dados
+    wire PCSource [3:0];
+    wire ALUSrcA [1:0];
+    wire ALUsrcB [1:0];
+    wire IorD [5:0];
+    wire RegDst [2:0];
+    wire MemtoReg [3:0];
+    wire divCtrl [1:0];
+    wire multCtrl [1:0];
+    wire ShiftCtrl [1:0];
+    wire ignore [1:0];
+    wire BranchCtrl [1:0];
 
-// sinais Ctrl
-wire SHIPTOp3 [1:0];
-wire LoadControl;
-wire BranchControl [3:0];
-wire EPCControl;
-wire ALUOp;
-wire WriteDataCtrl [1:0];
-wire WordCrackerCtrl;
-wire ShiftCtrl [2:0];
-wire EntryCtrl [2:0];
-wire ReduceCtrl [2:0];
-wire HiCtrl;
-wire LoCtrl;
-wire ALUOutCtrl;
-// div e mult ctrl tem em dois lugares (talvez dois diferentes para o mux?)
+    // sinais Ctrl
+    wire SHIPTOp3 [1:0];
+    wire LoadControl;
+    wire BranchControl [3:0];
+    wire EPCControl;
+    wire ALUOp;
+    wire WriteDataCtrl [1:0];
+    wire WordCrackerCtrl;
+    wire ShiftCtrl [2:0];
+    wire EntryCtrl [2:0];
+    wire ReduceCtrl [2:0];
+    wire HiCtrl;
+    wire LoCtrl;
+    wire ALUOutCtrl;
+    // div e mult ctrl tem em dois lugares (talvez dois diferentes para o mux?)
 
-// excecoes
-wire Ignore [1:0];
-wire Overflow;
+    // Loads
+    wire AB_Load;
+    wire MDR_Load;
+    wire END_Load;
 
-// Os proximos fios nomeei a partir de onde saem
+    // excecoes
+    wire Ignore [1:0];
+    wire Overflow;
 
-// Sai de PC
-wire PCOut [31:0];
+    // Os proximos fios nomeei a partir de onde saem
 
-//Sai de Memory 
-wire MemOut [31:0];
+    // Sai de PC
+    wire PCOut [31:0];
 
-// IR
-wire IR31_26 [5:0];
-wire IR25_21 [4:0];
-wire IR20_16 [4:0];
-wire IR10_6 [4:0];
-wire IR15_0 [15:0];
+    //Sai de Memory 
+    wire MemOut [31:0];
 
-// Registradores - Falta a quantidade de bits
-wire ReadData1 [31:0];
-wire ReadData2 [31:0]; 
+    // IR
+    wire IR31_26 [5:0];
+    wire IR25_21 [4:0];
+    wire IR20_16 [4:0];
+    wire IR10_6 [4:0];
+    wire IR15_0 [15:0];
 
-// Registrador A
-wire RegA [15:0]; // nao tenho ctz da qtd de bits
+    // Registradores - Falta a quantidade de bits
+    wire ReadData1 [31:0];
+    wire ReadData2 [31:0]; 
 
-// Registrador B 
-wire RegB [15:0];
+    // Registrador A
+    wire RegA [15:0]; // nao tenho ctz da qtd de bits
 
-// ULA
-wire ALU [31:0];
-wire Zero;
-wire LT; // Lower than
-wire GT; // greater than
-wire ET; // equal to
-wire Negative; 
+    // Registrador B 
+    wire RegB [15:0];
 
-// MDR
-wire MDR [31:0];
+    // ULA
+    wire ALU [31:0];
+    wire Zero;
+    wire LT; // Lower than
+    wire GT; // greater than
+    wire ET; // equal to
+    wire Negative; 
 
-// Word Cracker
-wire WordCracker; // nao lembro qtos bits
+    // MDR
+    wire MDR [31:0];
 
-// Load Size
-wire LoadSize [31:0];
+    // Word Cracker
+    wire WordCracker; // nao lembro qtos bits
 
-//Registrador de Deslocamento
-wire RD [31:0];
+    // Load Size
+    wire LoadSize [31:0];
 
-// DIV
-wire Div [31:0];
+    //Registrador de Deslocamento
+    wire RD [31:0];
 
-// MULT
-wire Mult [31:0];
+    // DIV
+    wire Div [31:0];
 
-// AluOut:
-wire ALUOut [31:0];
+    // MULT
+    wire Mult [31:0];
 
-// EPC: 
-wire EPC [31:0]; 
+    // AluOut:
+    wire ALUOut [31:0];
 
-// HI/LO:
-wire HI [15:0]; 
-wire LO [15:0]; 
+    // EPC: 
+    wire EPC [31:0]; 
 
-// SHIFTLEFT:
-wire SLOut [31:0];
+    // HI/LO:
+    wire HI [15:0]; 
+    wire LO [15:0]; 
 
-// END:
-wire ENDtoEPC [31:0]; // nao tenho ctz 
+    // SHIFTLEFT:
+    wire SLOut [31:0];
 
-// SignExtend(16 - 32):
-wire SE16_32 [31:0];
+    // END:
+    wire ENDtoEPC [31:0]; // nao tenho ctz 
 
-// SignExtend (1 - 32);
-wire SE1_32 [31:0];
+    // SignExtend(16 - 32):
+    wire SE16_32 [31:0];
 
-// SignExtend (8-32);
-wire SE8_32 [31:0];
+    // SignExtend (1 - 32);
+    wire SE1_32 [31:0];
 
-// SignExtend (32 - 5);
-wire se32_5 [4:0] ;
+    // SignExtend (8-32);
+    wire SE8_32 [31:0];
 
-------------------------------
-// MUXES:
-// IorD:
-wire IorDMUXOut [31:0];
+    // SignExtend (32 - 5);
+    wire se32_5 [4:0] ;
 
-// WriteDataCtrlMUX:
-wire WriteDataCtrlMUXOut [31:0] // nao tenho ctz;
+    ------------------------------
+    // MUXES:
+    // IorD:
+    wire IorDMUXOut [31:0];
 
-// RegDst;
-wire RegDstMUXOut [5:0];
+    // WriteDataCtrlMUX:
+    wire WriteDataCtrlMUXOut [31:0] // nao tenho ctz;
 
-// MemtoReg;
-wire MemtoRegMUXOut [31:0]; 
+    // RegDst;
+    wire RegDstMUXOut [5:0];
 
-// ReduceCtrl:
-wire ReduceCtrlMUXOut [31:0];
+    // MemtoReg;
+    wire MemtoRegMUXOut [31:0]; 
 
-// ShiftCtrl:
-wire ShiftCtrlMUXOut [15:0];
+    // ReduceCtrl:
+    wire ReduceCtrlMUXOut [31:0];
 
-// EntryCtrl:
-wire EntryCtrlMUXOut [15:0];
+    // ShiftCtrl:
+    wire ShiftCtrlMUXOut [15:0];
 
-// Div/MultCtrl:
-wire DivCtrlMUXOut [31:0];
-wire MultCtrlMUXOut [31:0]; 
+    // EntryCtrl:
+    wire EntryCtrlMUXOut [15:0];
 
-// ALUSrcA/B:
-wire ALUSrcAMUXOut [31:0];
-wire ALUSrcBMUXOut [31:0];
+    // Div/MultCtrl:
+    wire DivCtrlMUXOut [31:0];
+    wire MultCtrlMUXOut [31:0]; 
 
-// PCSource:
-wire PCSourceMUXOut [31:0];
+    // ALUSrcA/B:
+    wire ALUSrcAMUXOut [31:0];
+    wire ALUSrcBMUXOut [31:0];
 
-// BranchControl:
-wire BranchCtrlMUXOut;
+    // PCSource:
+    wire PCSourceMUXOut [31:0];
 
-// Ignore:
-wire IgnoreMUXOut; 
+    // BranchControl:
+    wire BranchCtrlMUXOut;
 
-// Registradores padrão
-wire [31:0] reg253; // check how many bits this register has
-wire [31:0] reg254;
-wire [31:0] reg255;
-wire [31:0] reg31;
-wire [31:0] reg29;
-wire [31:0] reg227;
-wire [31:0] reg4;
-wire [31:0] reg16;
+    // Ignore:
+    wire IgnoreMUXOut; 
 
-//saida das portas logicas
-wire WriteCondANDtoPCWriteOR; 
-wire PCWriteORtoPC;
-wire LTGTORtoBranchMUX;
-wire LTZerotoBranchMUX;
+    // Registradores padrão
+    wire [31:0] reg253; // check how many bits this register has
+    wire [31:0] reg254;
+    wire [31:0] reg255;
+    wire [31:0] reg31;
+    wire [31:0] reg29;
+    wire [31:0] reg227;
+    wire [31:0] reg4;
+    wire [31:0] reg16;
 
-// portas logicas
-and(BranchCtrlMUXOut, PCWriteCond, WriteCondANDtoPCWriteOR); // (input, input, output)
-or(WriteCondANDtoPCWriteOR, PCWrite, PCWriteORtoPC);
-or(LT,GT, LTGTORtoBranchMUX);
-or(LT, Zero, LTZerotoBranchMUX);
+    //saida das portas logicas
+    wire WriteCondANDtoPCWriteOR; 
+    wire PCWriteORtoPC;
+    wire LTGTORtoBranchMUX;
+    wire LTZerotoBranchMUX;
 
+    // portas logicas
+    and(BranchCtrlMUXOut, PCWriteCond, WriteCondANDtoPCWriteOR); // (input, input, output)
+    or(WriteCondANDtoPCWriteOR, PCWrite, PCWriteORtoPC);
+    or(LT,GT, LTGTORtoBranchMUX);
+    or(LT, Zero, LTZerotoBranchMUX);
 
-Registrador PC_(
-    clock,
-    reset, // reset ou Reset?
-    PCWrite,
-    PCWriteCond,
-    PCSourceMUXtoPC,
-    PCtoMUX
-);
+    Registrador PC(
+        clock,
+        reset, // reset minusculo
+        PCWriteORtoPC,
+        PCSourceMUXOut,
+        PCOut
+    );
 
-Memoria MEM_(
-    clock,
-    reset,
-    // MemRead
-    MemWrite,
-    // PCtoMem, 
-    // MUXWriteData, 
-    MemDatatoIR
-);
+    Registrador A(
+        clock,
+        reset,
+        AB_Load,
+        ReadData1,
+        RegA
+    );
 
-Instr_Reg IR_(
-    clock,
-    reset,
-    IRwrite,
-    MemDatatoIR,
-    // OPCODE, 
-    // resto dos fios de saída bugados no diagrama
-    //      .
-    //      .
-);
+    Registrador B(
+        clock,
+        reset,
+        AB_Load,
+        ReadData2,
+        RegB
+    );
+
+    Registrador ALUOutReg(
+        clock,
+        reset,
+        ALUOutCtrl,
+        ALU,
+        ALUOut
+    );
+
+    Registrador MDRReg(  // em uma das saídas do mdr ele envia apenas 8 bits, verificar como faze isso
+        clock,
+        reset,
+        MDR_Load,
+        MemOut,
+        MDR
+    );
+
+    Registrador EPC(
+        clock,
+        reset,
+        EPCControl,
+        ENDtoEPC,
+        EPC
+    );
+
+    Registrador ENDReg(
+        clock, 
+        reset,
+        END_Load,
+        PCOut,
+        ENDtoEPC
+    );
+
+    Memoria MEM_(
+        clock,
+        reset,
+        // MemRead
+        MemWrite,
+        // PCtoMem, 
+        // MUXWriteData, 
+        MemDatatoIR
+    );
+
+    Instr_Reg IR_(
+        clock,
+        reset,
+        IRwrite,
+        MemDatatoIR,
+        // OPCODE, 
+        // resto dos fios de saída bugados no diagrama
+        //      .
+        //      .
+    );
 
   // muxes
     MemtoRegMUX MEMTOREGMUX(
