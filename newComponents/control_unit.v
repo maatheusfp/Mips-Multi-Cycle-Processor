@@ -19,7 +19,7 @@ module control_unit(
     output reg [1:0] ShiftCtrl,
     output reg [1:0] EntryCtrl,
     output reg ALUSrcA,
-    output reg [1:0] ALUsrcB,
+    output reg [1:0] ALUSrcB,
     output reg ignore,
     output reg DivMultCtrl,
     output reg [1:0] BranchControl,
@@ -44,8 +44,7 @@ module control_unit(
     // ctrls de componentes
 
     output reg [1:0] WordCrackerCtrl,
-    output reg MemRead, 
-    output reg MemWrite, 
+    output reg MemRead_Write, 
     output reg [1:0] LoadControl,
     output reg [2:0] ALUOp,
     output reg DivCtrl,
@@ -113,6 +112,8 @@ parameter state_jal1 = 7'd5;
 parameter state_jal2 = 7'd6;
 parameter state_jal3 = 7'd7;
 parameter state_jal4 = 7'd8;
+parameter state_jal5 = 7'd79;
+parameter state_jal6 = 7'd80;
 parameter wait1 = 7'd9;
 
 parameter state_aluout = 7'd10; 
@@ -221,43 +222,119 @@ reg [6:0] state;
 reg [5:0] shiftmode;
 
 initial begin
-    reset_out = 1'b1;
+    reset_out = 1;
     state = state_reset;
 end
 
 always @(posedge clk) begin
     if (reset == 1'b1 || state == state_reset) begin
+        // pegando o próximo estado
         state <= state_fetch1;
-        PCWriteCond <= 0
-        PCWrite,
-        MemWrite, 
-        IRwrite, 
-        RegWrite, 
-        PCSource,
-        ALUSrcA,
-        ALUsrcB,
-        IorD,
-        RegDst,
-        MemtoReg,
-        divCtrl,
-        multCtrl,
-        ShiftCtrl,
-        ignore,
-        BranchCtrl,
-        SHIPTOp3,
-        LoadControl,
-        BranchControl,
-        EPCControl,
-        ALUOp,
-        WriteDataCtrl,
-        WordCrackerCtrl,
-        ShiftCtrl,
-        EntryCtrl,
-        ReduceCtrl,
-        HiCtrl,
-        LoCtrl,
-        ALUOutCtrl,
-        Ignore
-        reset_out
+        // resetando os sinais
+        IorD <= 3'b0;
+        WriteDataCtrl <= 0;
+        RegDst <= 3'b0;
+        MemtoReg <= 4'b0;
+        ReduceCtrl <= 0;
+        ShiftCtrl <= 2'b0;
+        EntryCtrl <= 2'b0;
+        ALUSrcA <= 0;
+        ALUSrcB <= 2'b0;
+        ignore <= 0;
+        DivMultCtrl <= 0;
+        BranchControl <= 2'b0;
+        PCSource <= 2'b0;
+        PCWriteCond <= 0;
+        PCWrite <= 0;
+        MDRwrite <= 0;
+        ENDwrite <= 0; 
+        IRwrite <= 0;
+        RegWrite <= 0;  
+        SHIPTOp3 <= 0; 
+        Awrite <= 0; 
+        Bwrite <= 0; 
+        HiCtrl <= 0; 
+        LoCtrl <= 0; 
+        ALUOutCtrl <= 0; 
+        EPCControl <= 0; 
+        WordCrackerCtrl <= 2'b0;
+        MemRead_Write <= 0; 
+        LoadControl <= 2'b0;
+        ALUOp <= 3'b0;
+        DivCtrl <= 0; 
+        MultCtrl <= 0; 
+        reset_out <= 0;
+        // resetando a pilha
+        RegDst <= 3'b010;
+        MemtoReg <= 4'b0101;
+        regwrite <= 1;
+    end 
+    else begin
+        case(state)
 
-        
+            state_fetch1:begin
+                IorD <= 3'b000;
+                MemRead_Write <= 0;
+                ALUSrcA <= 0;
+                ALUsrcB <= 2'b01;
+                ALUOp <= 3'b001;
+                state <= state_fetch2;
+            end
+            state_fetch2:begin
+                PCSource <= 2'b10;
+                PCWrite <= 1;
+                IRwrite <= 1;
+                state <= state_decode;
+            end
+            state_decode: begin
+                ALUSrcA <= 0;
+                ALUSrcB <= 2'b11;
+                ALUOp <= 3'b000;
+                case (OPCODE)
+
+                    default: begin
+                        state <= state_aluout;
+                    end
+
+                    J: begin 
+                        state <= state_jump;
+                    end
+
+                    JAL: begin
+                        state <= state_jal1;
+                    end
+
+                endcase
+            end
+            state_jump: begin
+                PCSource <= 2'b00;
+                PCWrite <= 1;
+                state <= state_fetch1;
+            end
+            state_jal1: begin
+                ALUSrcA <= 0;
+                ALUOp <= 3'b000;
+                state <= state_jal2;
+            end
+            state_jal2: begin
+                ALUCtrl <= 1;
+                state <= state_jal3;
+            end
+            state_jal3: begin 
+                ALUOutCtrl <= 1;
+                RegDst <= 3'b001;
+                MemtoReg <= 3'b000;
+                RegWrite = 1;
+                state <= state_jal4;
+            end
+            state_jal4: begin
+                state <= state_jal5;
+            end
+            state_jal5: begin
+                state <= state_jal6;
+            end
+            state_jal6: begin
+                
+                state <= wait1;
+            end
+            
