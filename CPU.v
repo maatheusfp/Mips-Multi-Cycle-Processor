@@ -19,6 +19,18 @@
 `include "componentesFornecidos/Instr_Reg.vhd"
 `include "componentesFornecidos/Banco_reg.vhd"
 
+`include "newComponents/hi.v"
+`include "newComponents/lo.v"
+`include "newComponents/Load.v"
+`include "newComponents/shiftLeft2"
+`include "newComponents/singExtend_1x32.v"
+`include "newComponents/singExtend_8x32.v"
+`include "newComponents/singExtend_16x32.v"
+`include "newComponents/singExtend_32x5.v"
+`include "newComponents/word_cracker.v"
+`include "newComponents/mult.v"
+`include "newComponents/div.v"
+
 module CPU(
     input wire clock,
     input wire reset
@@ -111,7 +123,7 @@ module CPU(
     wire MDR [31:0];
 
     // Word Cracker
-    wire WordCracker; // nao lembro qtos bits
+    wire WordCrackerOUT; // nao lembro qtos bits
 
     // Load Size
     wire LoadSize [31:0];
@@ -135,8 +147,9 @@ module CPU(
     wire HI [15:0]; 
     wire LO [15:0]; 
 
-    // SHIFTLEFT:
-    wire SLOut [31:0];
+    // SHIFTLEFTCIMA:
+    wire SLOutCIMA [31:0];
+    wire SLOutBAIXO [31:0];
 
     // END:
     wire ENDtoEPC [31:0]; // nao tenho ctz 
@@ -151,7 +164,7 @@ module CPU(
     wire SE8_32 [31:0];
 
     // SignExtend (32 - 5);
-    wire se32_5 [4:0] ;
+    wire SE32_5 [4:0];
 
     ------------------------------
     // MUXES:
@@ -430,4 +443,64 @@ module CPU(
         MemWrite_Read,
         MemControlMUXOut
     );
+
+    hi HIReg(
+        DivCtrlMUXOut,
+        HiCtrl,
+        HI
+    );
+
+    lo LOReg(
+        MultCtrlMUXOut,
+        LoCtrl,
+        LO
+    );
+
+    Load LoadSizeReg(
+        MDR,
+        LoadControl,
+        LoadSize
+    );
+
+    shiftLeft2 ShifLeftCIMA( // na parte de cima do circuito
+        IR15_0,
+        SLOutCIMA,
+    );
+
+    shiftLeft2 ShifLeftBAIXO(
+        IR15_0,
+        SLOutBAIXO
+    );
+
+    signExtend_1x32 SE1_32Reg(
+        LT,
+        SE1_32
+    );
+
+    singExtend_8x32 SE8_32Reg(
+        MDR, // mdr aqui eh so 8 bits
+        SE8_32
+    );
+
+    singExtend_16x32 SE16_32Reg(
+        IR15_0,
+        SE16_32
+    );
+
+    singExtend_32x5 SE32_5Reg(
+        ReduceCtrlMUXOut,
+        SE32_5
+    );
+
+    /* WordCracker WC(
+        MDR,
+
+    ) */
+
+    /* mult multReg(
+        clock,
+        reset,
+        RegA,
+        RegB,
+    ) */
 
