@@ -1,5 +1,5 @@
 //mux 9x1
-module 227ToReg(
+module MemtoRegMUX(
         input [31:0] RDtoMemtoRegMUX, // ok
         input [31:0] SE1_32toMemtoRegMUX, // ok
         input [31:0] MemDatatoMemtoRegMUX,// ok
