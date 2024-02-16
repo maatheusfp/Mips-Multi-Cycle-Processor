@@ -42,7 +42,7 @@ always @(posedge clock or posedge reset) begin
             end
 
             Q_1 <= Q[1:0];
-            Q <= {Q[30:0], A[0]};
+            Q <= {Q[30:1], A[0]}; // Correção aqui
             A <= {A[30:0], A[31]};
             count <= count + 1;
 
@@ -52,5 +52,46 @@ end
 
 assign hi_mult = A;
 assign lo_mult = Q;
+
+endmodule
+
+`timescale 1ns/1ns
+
+module mult_tb;
+
+    // Inputs
+    reg signed [31:0] a;
+    reg signed [31:0] b;
+
+    // Outputs
+    wire signed [31:0] result;
+
+    // Instantiate the module under test
+    mult dut (
+        .clock(),
+        .reset(),
+        .multiplicant(a),
+        .multiplier(b),
+        .hi_mult(),
+        .lo_mult()
+    );
+
+    // Clock generation
+    reg clk;
+    always #5 clk = ~clk;
+
+    // Test stimulus
+    initial begin
+        clk = 0;
+        a = 8;
+        b = 5;
+
+        #10;
+
+        $display("Result: %d", result);
+
+        #10;
+        $finish;
+    end
 
 endmodule
