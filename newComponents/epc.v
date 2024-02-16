@@ -1,16 +1,16 @@
 module EPC(
     input wire [31:0] ENDtoEPC, 
-    input wire EPCControl; 
-    output reg [31:0] EPCtoPCSourceMUX;
+    input wire EPCControl,
+    output reg [31:0] EPCtoPCSourceMUX
 );
 
-    always @(*) begin
-        if (EPCControl == 1){
-            EPCtoPCSourceMUX = ENDtoEPC;
-        }
-        else {
-            EPCtoPCSourceMUX = 16'b0;
-        }
+    always @(EPCControl or ENDtoEPC) begin
+        if (EPCControl == 1) begin
+            EPCtoPCSourceMUX <= ENDtoEPC;
+        end
+        else begin
+            EPCtoPCSourceMUX <= 32'b0;
+        end
     end
-    
+
 endmodule
