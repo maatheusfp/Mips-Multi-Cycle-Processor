@@ -221,43 +221,58 @@ reg [6:0] state;
 reg [5:0] shiftmode;
 
 initial begin
-    reset_out = 1'b1;
+    reset_out = 1;
     state = state_reset;
 end
 
 always @(posedge clk) begin
     if (reset == 1'b1 || state == state_reset) begin
+        // pegando o próximo estado
         state <= state_fetch1;
-        PCWriteCond <= 0
-        PCWrite,
-        MemWrite, 
-        IRwrite, 
-        RegWrite, 
-        PCSource,
-        ALUSrcA,
-        ALUsrcB,
-        IorD,
-        RegDst,
-        MemtoReg,
-        divCtrl,
-        multCtrl,
-        ShiftCtrl,
-        ignore,
-        BranchCtrl,
-        SHIPTOp3,
-        LoadControl,
-        BranchControl,
-        EPCControl,
-        ALUOp,
-        WriteDataCtrl,
-        WordCrackerCtrl,
-        ShiftCtrl,
-        EntryCtrl,
-        ReduceCtrl,
-        HiCtrl,
-        LoCtrl,
-        ALUOutCtrl,
-        Ignore
-        reset_out
+        // resetando os sinais
+        IorD <= 3'b0;
+        WriteDataCtrl <= 0;
+        RegDst <= 3'b0;
+        MemtoReg <= 4'b0;
+        ReduceCtrl <= 0;
+        ShiftCtrl <= 2'b0;
+        EntryCtrl <= 2'b0;
+        ALUSrcA <= 0;
+        ALUsrcB <= 2'b0;
+        ignore <= 0;
+        DivMultCtrl <= 0;
+        BranchControl <= 2'b0;
+        PCSource <= 2'b0;
+        PCWriteCond <= 0;
+        PCWrite <= 0;
+        MDRwrite <= 0;
+        ENDwrite <= 0; 
+        IRwrite <= 0;
+        RegWrite <= 0;  
+        SHIPTOp3 <= 0; 
+        Awrite <= 0; 
+        Bwrite <= 0; 
+        HiCtrl <= 0; 
+        LoCtrl <= 0; 
+        ALUOutCtrl <= 0; 
+        EPCControl <= 0; 
+        WordCrackerCtrl <= 2'b0;
+        MemRead <= 0; 
+        MemWrite <= 0; 
+        LoadControl <= 2'b0;
+        ALUOp <= 3'b0;
+        DivCtrl <= 0; 
+        MultCtrl <= 0; 
+        reset_out <= 0;
+        // resetando a pilha
+        RegDst <= 3'b010;
+        MemtoReg <= 4'b0101;
+        regwrite <= 1;
+    end 
+    else begin
+        case(state)
+
+            state_fetch1:
+            
 
         
