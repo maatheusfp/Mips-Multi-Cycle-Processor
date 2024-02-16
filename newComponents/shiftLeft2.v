@@ -1,11 +1,12 @@
 //  shift left 2 = multiplies by 4 (2**2)
-module shiftLeft2(
-    input wire IR15_0toShiftLeft [15:0],  // input 16 bits
-    output reg SLtoAluSrcBMUX [31:0] // output 32 bits
-    );
-    
-    assign SLtoAluSrcBMUX = IR15_0toShiftLeft << 2; // shift left 2 = multiplies by 4 (2**2)
 
+module shiftleft2 (
+    input wire [31:0] IR15_0toShiftLeft,
+    output wire [31:0] SLtoAluSrcBMUX
+);
+
+    assign SLtoAluSrcBMUX = IR15_0toShiftLeft << 2; 
+    
 endmodule
 
 // testbench:

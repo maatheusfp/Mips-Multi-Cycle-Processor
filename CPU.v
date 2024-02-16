@@ -1,3 +1,18 @@
+`include "newComponents/muxes/227toReg.v"
+`include "newComponents/muxes/aluToPc.v"
+`include "newComponents/muxes/aToAlu.v"
+`include "newComponents/muxes/aToReg_desloc.v"
+`include "bToAlu.v"
+`include "epcToPc.v"
+`include "hi.v"
+`include "irToReg.v"
+`include "lo.v"
+`include "mdaToSign32_5.v"
+`include "overflowToControl_unit.v"
+`include "pcToMem.v"
+`include "sign32_5ToReg_desloc.v"
+`include "wcToMem.v"
+
 module CPU(
     input wire clock,
     input wire reset
@@ -266,3 +281,121 @@ Instr_Reg IR_(
     //      .
     //      .
 );
+
+  // muxes
+    MemtoRegMUX MEMTOREGMUX(
+        RDtoMemtoRegMUX,
+        SE1_32toMemtoRegMUX,
+        MemDatatoMemtoRegMUX,
+        ALUOuttoMemtoRegMUX,
+        LOtoMemtoRegMUX,
+        HItoMemtoRegMUX,
+        reg227,
+        LoadSizetoMemtoRegMUX,
+        MemtoReg,
+        RegDstMUXtoReg
+    );
+    
+    aluToPc BranchCtrlMUX(
+        zero,
+        GTtoBranchMUX,
+        LTorZero_toBranchCtrl,
+        GTorLT_toBranchCtrl,
+        BranchCtrl,
+        BranchCtrlMUXtoWriteCondAND
+    );
+
+    aToAlu ALUSrcAMUX(
+        AtoALUSrcA,
+        PCtoMUX,
+        ALUSrcA,
+        ALUSrcAMUXtoALU
+    );
+
+    aToReg_desloc EntryCtrlMUX(
+        AtoEntryCtrl,
+        BtoEntryCtrl,
+        IR15_0toMUXShiftCtrl,
+        EntryCtrl
+    );
+
+    bToAlu ALUSrcBMUX(
+        BtoALUSrcBMUX,
+        reg4,
+        SE16_32toALUsrcB,
+        SLtoAluSrcBMUX,
+        ALUsrcB,
+        ALUSrcAMUXtoALU
+    ); 
+
+    epcToPc PCSourceMUX(
+        SLtoPCSourceMYX,
+        EPCtoPCSourceMUX,
+        ALUOuttoPCSourceMUX,
+        PCSource,
+        PCSourceMUXtoPC
+    );
+
+    hi DivCtrlMUX(
+        DivtoDivCtrlMUX,
+        MulttoDivCtrlMUX,
+        divCtrl,
+        DivCtrlMUXtoHI
+    );
+
+    irToReg RegDstMUX(
+        reg31,
+        reg29,
+        IR15_0toMUXReg,
+        IR20_16toReg,
+        IR25_21toMUXReg,
+        RegDst,
+        RegDstMUXtoReg
+    );
+
+    lo MultCtrlMUX(
+        DivtoMultCtrlMUX,
+        MulttoMultCtrlMUX,
+        multCtrl,
+        MultCtrlMUXtoLO
+    );
+
+    mdaToSign32_5 ReduceCtrlMUX(
+        MDRtoRdcCtrlMUX,
+        BtoRdcCtrlMUX,
+        RdcCtrl,
+        RdcCtrlMUXtoSign32_5
+    );
+
+    overflowToControl_unit IgnoreMUX(
+        zero,
+        Overflow,
+        ignore,
+        IgnoreMUXtoUC
+    );
+
+    pcToMem IorDMUX(
+        ALUOuttoIorDMUX,
+        PCtoIordMUX,
+        reg253,
+        reg254,
+        reg255,
+        RDtoIorDMUX,
+        IorD,
+        IorDMUXtoMem
+    );
+
+    sign32_5ToReg_desloc ShiftCtrlMUX(
+        se32x5ToShift_ctrlMUX,
+        reg16,
+        IR10_6toMUXShiftCtrl,
+        ShiftCtrl,
+        ShiftCtrlMUXtoRD
+    );
+
+    wcToMem WriteDataCtrlMUX(
+        WCtoWriteDataCtrlMUX,
+        BtoWriteDataCtrlMUX,
+        WriteDataCtrl,
+        WriteDataCtrlMUXtoMem
+    );
