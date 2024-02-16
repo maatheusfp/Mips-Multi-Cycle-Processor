@@ -337,3 +337,4 @@ always @(posedge clk) begin
                 
                 state <= wait1;
             end
+            
