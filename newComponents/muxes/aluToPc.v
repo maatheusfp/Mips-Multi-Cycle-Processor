@@ -5,7 +5,7 @@ module aluToPc(
     input wire GTtoBranchMUX,
     input wire LTorZero_toBranchCtrl,
     input wire GTorLT_toBranchCtrl,
-    input wire [1:0] BranchCtrl ,
+    input wire [1:0] BranchCtrl,
     output reg BranchCtrlMUXtoWriteCondAND
 );
 
