@@ -351,5 +351,5 @@ Instr_Reg IR_(
         WordCracker,
         RegB,
         WriteDataCtrl,
-        WriteDataCtrlMUXOut
+        WriteDataCtrlMUXOutj
     );
