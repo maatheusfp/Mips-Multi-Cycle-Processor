@@ -2,7 +2,7 @@
 // mux 4x1
 module epcToPc(
     input wire SLtoPCSourceMYX [31:0],
-    input EPCtoPCSourceMUX [31:0],
+    input wire EPCtoPCSourceMUX [31:0],
     input wire ALUOuttoPCSourceMUX [31:0],
     input wire SE8_32toPCSource [31:0],
     input wire PCSource [1:0],
