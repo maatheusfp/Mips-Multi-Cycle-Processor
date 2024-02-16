@@ -140,7 +140,7 @@ wire SE1_32 [31:0];
 wire SE8_32 [31:0];
 
 // SignExtend (32 - 5);
-wire se32x5 [4:0] ;
+wire se32_5 [4:0] ;
 
 ------------------------------
 // MUXES:
@@ -237,118 +237,119 @@ Instr_Reg IR_(
 
   // muxes
     MemtoRegMUX MEMTOREGMUX(
-        RDtoMemtoRegMUX,
-        SE1_32toMemtoRegMUX,
-        MemDatatoMemtoRegMUX,
-        ALUOuttoMemtoRegMUX,
-        LOtoMemtoRegMUX,
-        HItoMemtoRegMUX,
+        RD,
+        SE1_32,
+        MDR,
+        ALUOut,
+        LO,
+        HI,
         reg227,
-        LoadSizetoMemtoRegMUX,
+        LoadSize,
         MemtoReg,
-        RegDstMUXtoReg
+        RegDstMUXOut
     );
     
     aluToPc BranchCtrlMUX(
         zero,
-        GTtoBranchMUX,
-        LTorZero_toBranchCtrl,
-        GTorLT_toBranchCtrl,
+        GT,
+        LT,
+        LTGTORtoBranchMUX,
         BranchCtrl,
-        BranchCtrlMUXtoWriteCondAND
+        BranchCtrlMUXOut
     );
 
     aToAlu ALUSrcAMUX(
-        AtoALUSrcA,
-        PCtoMUX,
+        RegA,
+        PCOut,
         ALUSrcA,
-        ALUSrcAMUXtoALU
+        ALUSrcAMUXOut
     );
 
     aToReg_desloc EntryCtrlMUX(
-        AtoEntryCtrl,
-        BtoEntryCtrl,
-        IR15_0toMUXShiftCtrl,
+        RegA,
+        RegB,
+        IR15_0,
         EntryCtrl
+        EntryCtrlMUXOut
     );
 
     bToAlu ALUSrcBMUX(
-        BtoALUSrcBMUX,
+        RegB,
         reg4,
-        SE16_32toALUsrcB,
-        SLtoAluSrcBMUX,
+        SE16_32,
+        SLOut,
         ALUsrcB,
-        ALUSrcAMUXtoALU
+        ALUSrcAMUXOut
     ); 
 
     epcToPc PCSourceMUX(
-        SLtoPCSourceMYX,
-        EPCtoPCSourceMUX,
-        ALUOuttoPCSourceMUX,
+        SLOut,
+        EPC,
+        ALUOut,
         PCSource,
-        PCSourceMUXtoPC
+        PCSourceMUXOut
     );
 
     hi DivCtrlMUX(
-        DivtoDivCtrlMUX,
-        MulttoDivCtrlMUX,
+        Div,
+        Mult,
         divCtrl,
-        DivCtrlMUXtoHI
+        DivCtrlMUXOut
     );
 
     irToReg RegDstMUX(
         reg31,
         reg29,
-        IR15_0toMUXReg,
-        IR20_16toReg,
-        IR25_21toMUXReg,
+        IR15_0,
+        IR20_16,
+        IR25_21,
         RegDst,
-        RegDstMUXtoReg
+        RegDstMUXOut
     );
 
     lo MultCtrlMUX(
-        DivtoMultCtrlMUX,
-        MulttoMultCtrlMUX,
+        Div,
+        Mult,
         multCtrl,
-        MultCtrlMUXtoLO
+        MultCtrlMUXOut
     );
 
     mdaToSign32_5 ReduceCtrlMUX(
-        MDRtoRdcCtrlMUX,
-        BtoRdcCtrlMUX,
+        MDR,
+        RegB,
         RdcCtrl,
-        RdcCtrlMUXtoSign32_5
+        ReduceCtrlMUXOut
     );
 
     overflowToControl_unit IgnoreMUX(
         zero,
         Overflow,
         ignore,
-        IgnoreMUXtoUC
+        IgnoreMUXOut
     );
 
     pcToMem IorDMUX(
-        ALUOuttoIorDMUX,
-        PCtoIordMUX,
+        AluOut,
+        PCOut,
         reg253,
         reg254,
         reg255,
-        RDtoIorDMUX,
+        RD,
         IorD,
-        IorDMUXtoMem
+        IorDMUXOut
     );
 
     sign32_5ToReg_desloc ShiftCtrlMUX(
-        se32x5ToShift_ctrlMUX,
+        se32_5,
         reg16,
-        IR10_6toMUXShiftCtrl,
+        IR10_6,
         ShiftCtrl,
-        ShiftCtrlMUXtoRD
+        ShiftCtrlMUXOut
     );
 
     wcToMem WriteDataCtrlMUX(
-        WCtoWriteDataCtrlMUX,
-        BtoWriteDataCtrlMUX,
+        WordCracker,
+        RegB,
         WriteDataCtrl,
-        WriteDataCtrlMUXtoMem
+        WriteDataCtrlMUXOutj
     );
