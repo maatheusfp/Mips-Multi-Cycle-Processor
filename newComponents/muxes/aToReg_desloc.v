@@ -5,6 +5,7 @@ module aToReg_desloc(
     input wire [15:0] BtoEntryCtrl,
     input wire [15:0] IR15_0toMUXShiftCtrl,
     input wire [1:0] EntryCtrl,
+    output wire [31:0] EntryCtrlMUXtoRD
 );
      
         always @(*) begin
