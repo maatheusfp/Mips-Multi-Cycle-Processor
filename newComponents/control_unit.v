@@ -5,49 +5,56 @@ module control_unit(
     input wire [5:0] OPCODE,
     input wire [5:0] FUNCT,
 
-    input wire O,
+    input wire Overflow, //checar se tá certo
     input wire DivZero,
+    input wire GT,
 
-    // flags
-    output wire PCWriteCond,
-    output wire PCWrite,
-    output wire MemWrite, 
-    output wire IRwrite, 
-    output wire RegWrite, 
+    // multiplexadores 
 
-    // sinais de escolha de fonte de dados
-    output wire [3:0] PCSource,
-    output wire [1:0] ALUSrcA,
-    output wire [1:0] ALUsrcB,
-    output wire [5:0] IorD,
-    output wire [2:0] RegDst,
-    output wire [3:0] MemtoReg,
-    output wire [1:0] divCtrl,
-    output wire [1:0] multCtrl,
-    output wire [1:0] ShiftCtrl,
-    output wire [1:0] ignore,
-    output wire [1:0] BranchCtrl,
+    output reg [2:0] IorD,
+    output reg WriteDataCtrl,
+    output reg [2:0] RegDst,
+    output reg [3:0] MemtoReg,
+    output reg ReduceCtrl,
+    output reg [1:0] ShiftCtrl,
+    output reg [1:0] EntryCtrl,
+    output reg ALUSrcA,
+    output reg [1:0] ALUsrcB,
+    output reg ignore,
+    output reg DivMultCtrl,
+    output reg [1:0] BranchControl,
+    output reg [1:0] PCSource,
 
-    // sinais Ctrl
-    output wire [1:0] SHIPTOp3,
-    output wire LoadControl,
-    output wire [3:0] BranchControl,
-    output wire EPCControl,
-    output wire ALUOp,
-    output wire [1:0] WriteDataCtrl,
-    output wire WordCrackerCtrl,
-    output wire [2:0] ShiftCtrl,
-    output wire [2:0] EntryCtrl,
-    output wire [2:0] ReduceCtrl,
-    output wire HiCtrl,
-    output wire LoCtrl,
-    output wire ALUOutCtrl,
+    // escrevendo em registradores
 
-    // excecoes
-    output wire [1:0] Ignore
+    output reg PCWriteCond, // checar
+    output reg PCWrite,
+    output reg MDRwrite,
+    output reg ENDwrite,
+    output reg IRwrite,
+    output reg RegWrite, 
+    output reg SHIPTOp3,
+    output reg Awrite,
+    output reg Bwrite,
+    output reg HiCtrl,
+    output reg LoCtrl,
+    output reg ALUOutCtrl,
+    output reg EPCControl,
+
+    // ctrls de componentes
+
+    output reg [1:0] WordCrackerCtrl,
+    output reg MemRead, 
+    output reg MemWrite, 
+    output reg [1:0] LoadControl,
+    output reg [2:0] ALUOp,
+    output reg DivCtrl,
+    output reg MultCtrl,
 
     // reset
-    output wire reset_out
+
+    output reg reset_out // olhar
+
 );
 
 // Opcodes Parameters
@@ -70,7 +77,7 @@ parameter SRL_FUNCT = 6'h2;
 parameter SUB_FUNCT = 6'h22;
 parameter BREAK_FUNCT = 6'hd;
 parameter RTE_FUNCT = 6'h13;
-parameter DIVM_FUNCT = 6'h5;
+parameter XCHG_FUNCT = 6'h5;
 
 
 // I instructions
@@ -80,7 +87,7 @@ parameter BEQ = 6'h4;
 parameter BNE = 6'h5;
 parameter BLE = 6'h6;
 parameter BGT = 6'h7;
-parameter ADDM = 6'h1;
+parameter SRAM = 6'h1;
 parameter LB = 6'h20;
 parameter LH = 6'h21;
 parameter LUI = 6'hf;
@@ -209,4 +216,48 @@ parameter state_xchg1 = 7'd76;
 parameter state_xchg2 = 7'd77;
 parameter state_xchg3 = 7'd78;
 
+reg [6:0] counter;
+reg [6:0] state;
+reg [5:0] shiftmode;
 
+initial begin
+    reset_out = 1'b1;
+    state = state_reset;
+end
+
+always @(posedge clk) begin
+    if (reset == 1'b1 || state == state_reset) begin
+        state <= state_fetch1;
+        PCWriteCond <= 0
+        PCWrite,
+        MemWrite, 
+        IRwrite, 
+        RegWrite, 
+        PCSource,
+        ALUSrcA,
+        ALUsrcB,
+        IorD,
+        RegDst,
+        MemtoReg,
+        divCtrl,
+        multCtrl,
+        ShiftCtrl,
+        ignore,
+        BranchCtrl,
+        SHIPTOp3,
+        LoadControl,
+        BranchControl,
+        EPCControl,
+        ALUOp,
+        WriteDataCtrl,
+        WordCrackerCtrl,
+        ShiftCtrl,
+        EntryCtrl,
+        ReduceCtrl,
+        HiCtrl,
+        LoCtrl,
+        ALUOutCtrl,
+        Ignore
+        reset_out
+
+        
