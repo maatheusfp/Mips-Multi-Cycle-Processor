@@ -43,7 +43,7 @@ module control_unit(
 
     // ctrls de componentes
 
-    output reg [1:0] WordCrackerCtrl,
+    output reg [1:0] WordCrackerCtrl, // 00 = word, 01 = half , 10 = byte
     output reg MemRead_Write, 
     output reg [1:0] LoadControl,
     output reg [2:0] ALUOp,
@@ -123,6 +123,8 @@ parameter state_sram2 = 7'd12;
 parameter state_sram3 = 7'd13;
 parameter state_sram4 = 7'd14;
 parameter state_sram5 = 7'd15;
+parameter state_sram6 = 7'd92;
+parameter state_sram7 = 7'd93;
 
 parameter state_RDBR = 7'd16;
 
@@ -140,10 +142,13 @@ parameter state_srav = 7'd23;
 
 parameter state_sllv = 7'd24;
 
-parameter state_addi_slti1 = 7'd25;
-parameter state_addi_slti2 = 7'd26;
+parameter state_addi1 = 7'd25;
+parameter state_addi2_addiu2 = 7'd26;
+parameter state_slti1 = 7'd87;
+parameter state_slti2 = 7'd88; 
 parameter state_slti3 = 7'd27;
-parameter state_addi_addiu3 = 7'd28;
+parameter state_addiu1 = 7'd28;
+parameter state_addi3_addiu3 = 7'd89
 
 parameter state_addiu1 = 7'd29;
 parameter state_addiu2 = 7'd30;
@@ -161,21 +166,29 @@ parameter state_load1 = 7'd37;
 parameter state_load2 = 7'd38;
 parameter state_load3 = 7'd39;
 parameter state_load4 = 7'd40;
-parameter state_load5 = 7'd41;
+parameter state_lw = 7'd41;
+parameter state_lb = 7'd94;
+parameter state_lh = 7'd95;
 parameter state_load6 = 7'd42;
 
-parameter state_store1 = 7'd43;
+parameter state_sw = 7'd43;
+parameter state_sh = 7'd49;
+parameter state_sb = 7'd96;
+
 parameter state_store2 = 7'd44;
 parameter state_store3 = 7'd45;
 parameter state_store4 = 7'd46;
 parameter state_store5 = 7'd47;
 parameter state_store6 = 7'd48;
-parameter wait3 = 7'd49;
+
 
 parameter state_ula = 7'd50;
 
 parameter state_aluout2 = 7'd51;
 parameter state_aluout3 = 7'd84;
+
+parameter state_branch1 = 7'd90;
+parameter state_branch2 = 7'd91;
 
 parameter state_bgt = 7'd53;
 
@@ -351,117 +364,115 @@ always @(posedge clk) begin
             state_aluout: begin // ver aluOut 2
                 ALUOutCtrl <= 1;
 
+                case(OPCODE)
+                    default: begin
+                        state <= state_opcode_error1;
+                    end
+                    R_OPCODE: begin
+                        case(FUNCT)
+
+                            // intruções tipo R
+                            ADD_FUNCT: begin
+                                state <= state_add; 
+                            end
+                            AND_FUNCT: begin
+                                state <= state_and; 
+                            end
+                            DIV_FUNCT: begin
+                                state <= state_div; 
+                            end
+                            MULT_FUNCT: begin
+                                state <= state_mult; 
+                            end
+                            JR_FUNCT: begin
+                                state <= state_jr; 
+                            end
+                            MFHI_FUNCT: begin
+                                state <= state_mfhi; 
+                            end
+                            MFLO_FUNCT: begin
+                                state <= state_mflo; 
+                            end
+                            SLL_FUNCT: begin
+                                state <= state_sll1; 
+                            end
+                            SLLV_FUNCT: begin
+                                state <= state_sllv; 
+                            end
+                            SLT_FUNCT: begin
+                                state <= state_slt; 
+                            end
+                            SRA_FUNCT: begin
+                                state <= state_sra1; 
+                            end
+                            SRAV_FUNCT: begin
+                                state <= state_srav; 
+                            end
+                            SRL_FUNCT: begin
+                                state <= state_srl1; 
+                            end
+                            SUB_FUNCT: begin
+                                state <= state_sub; 
+                            end
+                            BREAK_FUNCT: begin
+                                state <= state_break1; 
+                            end
+                            RTE_FUNCT: begin
+                                state <= state_rte; 
+                            end
+                            XCHG_FUNCT: begin
+                                state <= state_xchg1; 
+                            end
+                        endcase
+                    end
+                    // instruções tipo I
+                    ADDI: begin
+                        state <= state_addi1;
+                    end
+                    ADDIU: begin
+                        state <= state_addiu1;
+                    end
+                    BEQ: begin
+                        state <= state_branch1;
+                    end
+                    BNE: begin
+                        state <= state_branch1;
+                    end
+                    BLE: begin
+                        state <= state_branch1;
+                    end
+                    BGT: begin
+                        state <= state_branch1;
+                    end
+                    SRAM: begin
+                        state <= state_store1;
+                    end
+                    LB: begin
+                        state <= state_load1;
+                    end
+                    LH: begin
+                        state <= state_load1;
+                    end
+                    LUI: begin
+                        state <= state_lui;
+                    end
+                    LW: begin
+                        state <= state_load1;
+                    end
+                    SB: begin
+                        state <= state_sb;
+                    end
+                    SH: begin
+                        state <= state_sh;
+                    end
+                    SLTI: begin
+                        state <= state_slti1;
+                    end
+                    SW: begin
+                        state <= state_sw;
+                    end
+                endcase               
             end 
-            
-            case(OPCODE)
-                default: begin
-                    state <= state_opcode_error1;
-                end
-                R_OPCODE: begin
-                    case(FUNCT)
-
-                        // intruções tipo R
-                        ADD_FUNCT: begin
-                            state <= state_add; 
-                        end
-                        AND_FUNCT: begin
-                            state <= state_and; 
-                        end
-                        DIV_FUNCT: begin
-                            state <= state_div; 
-                        end
-                        MULT_FUNCT: begin
-                            state <= state_mult; 
-                        end
-                        JR_FUNCT: begin
-                            state <= state_jr; 
-                        end
-                        MFHI_FUNCT: begin
-                            state <= state_mfhi; 
-                        end
-                        MFLO_FUNCT: begin
-                            state <= state_mflo; 
-                        end
-                        SLL_FUNCT: begin
-                            state <= state_sll1; 
-                        end
-                        SLLV_FUNCT: begin
-                            state <= state_sllv; 
-                        end
-                        SLT_FUNCT: begin
-                            state <= state_slt; 
-                        end
-                        SRA_FUNCT: begin
-                            state <= state_sra1; 
-                        end
-                        SRAV_FUNCT: begin
-                            state <= state_srav; 
-                        end
-                        SRL_FUNCT: begin
-                            state <= state_srl1; 
-                        end
-                        SUB_FUNCT: begin
-                            state <= state_sub; 
-                        end
-                        BREAK_FUNCT: begin
-                            state <= state_break1; 
-                        end
-                        RTE_FUNCT: begin
-                            state <= state_rte; 
-                        end
-                        XCHG_FUNCT: begin
-                            state <= state_xchg1; 
-                        end
-                    endcase
-                end
-                // instruções tipo I
-                ADDI: begin
-                    state <= state_addi_slti1;
-                end
-                ADDIU: begin
-                    state <= state_addiu1;
-                end
-                BEQ: begin
-                    state <= state_beq;
-                end
-                BNE: begin
-                    state <= state_bne;
-                end
-                BLE: begin
-                    state <= state_ble;
-                end
-                BGT: begin
-                    state <= state_bgt;
-                end
-                SRAM: begin
-                    state <= state_store1;
-                end
-                LB: begin
-                    state <= state_load1;
-                end
-                LH: begin
-                    state <= state_load1;
-                end
-                LUI: begin
-                    state <= state_lui;
-                end
-                LW: begin
-                    state <= state_load1;
-                end
-                SB: begin
-                    state <= state_store1;
-                end
-                SH: begin
-                    state <= state_store1;
-                end
-                SLTI: begin
-                    state <= state_addi_slti1;
-                end
-                SW: begin
-                    state <= state_store1;
-                end
-            endcase
-
             state_add: begin // operação com  ULA
                 ALUSrcA <= 1;
                 ALUSrcB <= 2'b00;
@@ -652,6 +663,219 @@ always @(posedge clk) begin
                 RegWrite <= 1;
                 state <= state_fetch1;
             end
+
+            state_addi1: begin 
+                ALUSrcA <= 1;
+                ALUSrcB <= 2'b10;
+                ALUOp <= 3'b001;
+                state <= state_addi2_addiu2;
+            
+            end
+
+            state_addi2_addiu2: begin
+                ALUOutCtrl <= 1;
+                state <= state_addi3_addiu3;
+            end
+
+            state_addi3_addiu3: begin 
+                RegDst <= 2'b00;
+                RegWrite <= 1;
+                MemtoReg <= 4'b0000;
+                state <= state_fetch1;
+            end
+
+            state_addiu1: begin
+                ALUSrcA <= 1;
+                ALUSrcB <= 2'b10;
+                ALUOp <= 3'b001;
+                ignore <= 1;
+                state <= state_addi2_addiu2;
+            end 
+
+            state_branch1: begin
+                ALUSrcA <= 1;
+                ALUSrcB <= 2'b00;
+                ALUOp <= 3'b111;
+                state <= state_branch2;
+            end
+
+            state_branch2: begin
+                ALUOutCtrl <= 1;
+                case(OPCODE)
+                    BEQ: begin
+                        state <= state_beq;
+                    end
+                    BNE: begin
+                        state <= state_bne;
+                    end
+                    BLE: begin
+                        state <= state_ble;
+                    end
+                    BGT: begin
+                        state <= state_bgt;
+                    end
+                endcase
+            end
+
+            state_beq: begin
+                PCSource <= 2'10;
+                PCWriteCond <= 1;
+                BranchControl <= 2'b10;
+                state <= state_fetch1;
+            end
+
+            state_bne: begin 
+                PCSource <= 2'10;
+                PCWriteCond <= 1;
+                BranchControl <= 2'b00;
+                state <= state_fetch1;
+            end
+
+            state_ble: begin
+                PCSource <= 2'10;
+                PCWriteCond <= 1;
+                BranchControl <= 2'b01;
+                state <= state_fetch1;
+            end
+
+            state_bgt: begin
+                PCSource <= 2'10;
+                PCWriteCond <= 1;
+                BranchControl <= 2'b00;
+                state <= state_fetch1;
+            end
+            
+            state_sram1: begin
+                ALUSrcA <= 1;
+                ALUSrcB <= 2'b10;
+                ALUOp <= 3'b001;
+                state <= state_sram1;
+            end
+
+            state_sram2: begin
+                ALUOutCtrl <= 1;
+                state <= state_sram3;
+            end
+
+            state_sram3: begin
+                MemRead_Write <= 0;
+                IorD <= 3'b101;
+                state <= state_sram4;
+            end
+
+            state_sram4: begin
+                state <= state_sram5;
+            end
+
+            state_sram5: begin
+                state <= state_sram6;
+            end
+
+            state_sram6: begin
+                MDRwrite <= 1;
+                state <= state_sram7;
+            end
+
+            state_sram7: begin
+                ReduceCtrl <= 1;
+                ShiftCtrl <= 2'b00;
+                EntryCtrl <= 2'b01;
+                ShiftOp3 <= 3'b100;
+                state <= state_RDBR;
+            end
+
+            state_load1: begin
+                ALUSrcA <= 1;
+                ALUSrcB <= 2'b10;
+                ALUOp <= 3'b001;
+            end
+
+            state_load2: begin 
+                ALUOutCtrl <= 1;
+                state <= state_load3;
+            end
+
+            state_load3: begin
+                IorD <= 3'b101;
+                MemWrite_Read <= 0;
+                state <= state_load4;
+            end
+            
+            state_load4: begin
+                MDR <= 1;
+                case(OPCODE)
+                    LW: begin
+                        state <= state_lw;
+                    end
+                    LH: begin
+                        state <= state_lh;
+                    end
+                    LB: begin
+                        state <= state_lb.;
+                    end
+                endcase
+            end
+
+            state_lw: begin 
+                MemtoReg <= 4'b0001;
+                LoadControl <= 2'b00;
+                state <= state_load6;
+            end
+
+            state_lb: begin 
+                MemtoReg <= 4'b0001;
+                LoadControl <= 2'b10;
+                state <= state_load6;
+            end
+
+            state_lh: begin 
+                MemtoReg <= 4'b0001;
+                LoadControl <= 2'b01;
+                state <= state_load6;
+            end
+            
+            state_load6: begin 
+                RegDst <= 2'b00;
+                RegWrite <= 1;
+                state <= state_fetch1;
+            end
+
+            state_lui: begin 
+                EntryCtrl <= 2'b00;
+                ShiftCtrl <= 2'b01;
+                ShiftOp3 <= 3'010;
+                state <= state_RDBR;
+            end
+
+            state_slti1: begin 
+                ALUSrcA <= 1;
+                ALUSrcB <= 2'b10;
+                ALUOp <= 3'b111;
+                state <= state_slti2;
+            end
+
+            state_slti2: begin
+                ALUOutCtrl <= 1;
+                state <= state_slti3;
+            end
+
+            state_slti3: begin 
+                RegDst <= 2'b00;
+                RegWrite <= 1;
+                MemtoReg <= 4'b0100;
+                state <= state_fetch1;
+            end 
+
+            state_sw: begin 
+                
+
+
+
+
+
+
+
+
 
             
 
