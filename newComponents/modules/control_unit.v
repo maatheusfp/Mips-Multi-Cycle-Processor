@@ -227,10 +227,14 @@ parameter state_and = 7'd83;
 parameter state_overflow1 = 7'd68;
 parameter state_overflow2 = 7'd69;
 parameter state_overflow3 = 7'd70;
+parameter state_overflow4 = 7'd102;
+parameter state_overflow5 = 7'd103;
 
 parameter state_opcode_error1 = 7'd71; // opcode inxeistente?
 parameter state_opcode_error2 = 7'd72;
 parameter state_opcode_error3 = 7'd73;
+parameter state_opcode_error4 = 7'd100;
+parameter state_opcode_error5 = 7'd101;
 
 parameter state_mflo = 7'd74;
 
@@ -240,7 +244,7 @@ parameter state_xchg1 = 7'd76;
 parameter state_xchg2 = 7'd77;
 parameter state_xchg3 = 7'd78;
 
-reg [6:0] counter;
+reg [5:0] counter;
 reg [6:0] state;
 reg [5:0] shiftmode;
 
@@ -496,7 +500,11 @@ always @(posedge clk) begin
             end
             // checar se houve overflow e então ir para o estado de overflow, se não, ir para o estado de escrita (state_add_sub_and)
             state_aluout2: begin // colocando em ALUOut
-                ALUOutCtrl <= 1;
+                if (overflow == 1)
+                    state <= state_overflow1;
+                else 
+                    state <= state_add_sub_and;
+                    ALUOutCtrl <= 1;
             end
             state_add_sub_and: begin
                 RegDst = 3'b011;
@@ -672,12 +680,15 @@ always @(posedge clk) begin
                 ALUSrcB <= 2'b10;
                 ALUOp <= 3'b001;
                 state <= state_addi2_addiu2;
-            
             end
 
             state_addi2_addiu2: begin
-                ALUOutCtrl <= 1;
-                state <= state_addi3_addiu3;
+                if (OPCODE == ADDI && overflow == 1)
+                    state <= state_overflow1;
+                
+                else 
+                    ALUOutCtrl <= 1;
+                    state <= state_addi3_addiu3;
             end
 
             state_addi3_addiu3: begin 
@@ -691,7 +702,7 @@ always @(posedge clk) begin
                 ALUSrcA <= 1;
                 ALUSrcB <= 2'b10;
                 ALUOp <= 3'b001;
-                ignore <= 1;
+                Ignore <= 1;
                 state <= state_addi2_addiu2;
             end 
 
@@ -945,11 +956,64 @@ always @(posedge clk) begin
                 state <= wait1;
             end
 
-            wait1: begin 
+            state_opcode_error1: begin 
+                IorD <= 3'b001;
+                ENDwrite <= 1;
+                MemRead_Write <= 1;
+            end
+
+            state_opcode_error2: begin 
+                state <= state_opcode_error3;
+            end
+
+            state_opcode_error3: begin
+                state <= state_opcode_error4;
+            end
+
+            state_opcode_error4: begin 
+                MDRwrite <= 1;
+                state <= state_opcode_error5;
+            end 
+
+            state_opcode_error5: begin
+                PCSource <= 3'b010;
+                EPCControl <= 1;
+                PCWrite <= 1;
                 state <= state_fetch1;
             end
             
+            state_overflow1: begin 
+                IorD <= 3'b001;
+                ENDwrite <= 1;
+                MemRead_Write <= 1;
+                Ignore <= 1;
+                state <= state_overflow2;
+            end
 
+            state_overflow2: begin 
+                state <= state_overflow3;
+            end
+
+            state_overflow3: begin
+                state <= state_overflow4;
+            end
+
+            state_overflow4: begin 
+                MDRwrite <= 1;
+                state <= state_overflow5;
+            end 
+
+            state_overflow5: begin
+                PCSource <= 3'b010;
+                EPCControl <= 1;
+                PCWrite <= 1;
+                state <= state_fetch1;
+            end
+            
+            state_mult: begin
+                while (counter < )
+                multCtrl
+            end
 
 
 
