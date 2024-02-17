@@ -200,6 +200,7 @@ parameter state_jr2 = 7'd85;
 parameter wait6 = 7'd65;
 
 parameter state_slt = 7'd66;
+parameter state_slt2 = 7'd86;
 
 parameter state_and_sub_and = 7'd67; // separou state_add_sub_and pq cada um tem um aluOp diferente
 parameter state_add = 7'd81;
@@ -297,6 +298,8 @@ always @(posedge clk) begin
                 ALUSrcA <= 0;
                 ALUSrcB <= 2'b11;
                 ALUOp <= 3'b000; // carregamento -> essa operacao tem que mudar pra executar outra instrucao, como fazer essa verificacao antes de mandar pro estado de aluout?
+                Awrite <= 1;
+                Bwrite <= 1;
                 case (OPCODE)
 
                     default: begin
@@ -559,8 +562,98 @@ always @(posedge clk) begin
                 ALUSrcA <= 1;
                 ALUSrcB <= 2'b00;
                 ALUOp <= 3'b111;
-                state <= state_aluout3;
+                state <= state_slt2;
             end
+
+            state_slt2: begin
+                RegDst <= 3'b011;
+                RegWrite <= 1;
+                MemtoReg <= 4'b0100;
+                state <= wait1;
+            end 
+
+            state_sra1: begin
+                ShiftCtrl <= 2'b10;
+                EntryCtrl <= 2'b01;
+                ShiftOp3 <= 3'b001;
+                state <= state_sra2;
+            end
+
+            state_sra2: begin
+                ShiftCtrl <= 2'b10;
+                EntryCtrl <= 2'b01;
+                ShiftOp3 <= 3'b100;
+                state <= state_RDBR;
+            end
+
+            state_srav: begin
+                ShiftCtrl <= 2'b00;
+                ReduceCtrl <= 0;
+                EntryCtrl <= 2'b10;
+                ShiftOp3 <= 3'b100;
+                state <= state_RDBR;
+            end
+
+            state_srl1: begin 
+                ShiftCtrl <= 2'b10;
+                EntryCtrl <= 2'b01;
+                ShiftOp3 <= 3'b001;
+                state <= state_srl2;
+            end 
+
+            state_srl2: begin
+                ShiftCtrl <= 2'b10;
+                EntryCtrl <= 2'b01;
+                ShiftOp3 <= 3'011;
+                state <= state_RDBR;
+            end
+
+            state_break1: begin 
+                ALUSrcA <= 0;
+                ALUSrcB <= 2'b01;
+                ALUOp <= 3'b010;
+                state <= state_break2;
+            end
+
+            state_break2: begin 
+                ALUOutCtrl <= 1;
+                state <= state_break3;
+            end 
+
+            state_break3: begin
+                PCWrite <= 1;
+                PCSource <= 2'b10;
+                state <= state_fetch1;
+            end
+
+            state_rte: begin
+                PCSource <= 2'b01;
+                PCWrite <= 1;
+                state <= state_fetch1;
+            end
+
+            state_xchg1: begin 
+                RegDst <= 3'b100;
+                MemtoReg <= 4'b0111;
+                RegWrite <= 1;
+                ALUSrcA <= 1;
+                ALUOp <= 3'b000;
+                state <= state_xchg3;
+            end 
+
+            state_xchg2: begin 
+                ALUOutCtrl <= 1;
+                state_xchg3;
+            end
+
+            state_xchg3: begin
+                RegDst <= 3'b000;
+                MemtoReg <= 4'b0000;
+                RegWrite <= 1;
+                state <= state_fetch1;
+            end
+
+            
 
 
 
