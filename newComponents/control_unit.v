@@ -268,6 +268,7 @@ always @(posedge clk) begin
         DivCtrl <= 0; 
         MultCtrl <= 0; 
         reset_out <= 0;
+        
         // resetando a pilha
         RegDst <= 3'b010;
         MemtoReg <= 4'b0101;
@@ -276,7 +277,7 @@ always @(posedge clk) begin
     else begin
         case(state)
 
-            state_fetch1:begin
+            state_fetch1:begin // valor de pc + leitura de memory + calculo de (pc + 4)
                 IorD <= 3'b000;
                 MemRead_Write <= 0;
                 ALUSrcA <= 0;
@@ -284,38 +285,38 @@ always @(posedge clk) begin
                 ALUOp <= 3'b001;
                 state <= state_fetch2;
             end
-            state_fetch2:begin
+            state_fetch2:begin // sai da memoria e escreve no IR
                 PCSource <= 2'b10;
                 PCWrite <= 1;
                 IRwrite <= 1;
                 state <= state_decode;
             end
-            state_decode: begin
+            state_decode: begin // leitura, decodificação e escrita
                 ALUSrcA <= 0;
                 ALUSrcB <= 2'b11;
-                ALUOp <= 3'b000;
+                ALUOp <= 3'b000; // carregamento -> essa operacao tem que mudar pra executar outra instrucao, como fazer essa verificacao antes de mandar pro estado de aluout?
                 case (OPCODE)
 
                     default: begin
-                        state <= state_aluout;
+                        state <= state_aluout; // coloca em aluOut
                     end
 
                     J: begin 
-                        state <= state_jump;
+                        state <= state_jump; // pula para o estado de jump
                     end
 
                     JAL: begin
-                        state <= state_jal1;
+                        state <= state_jal1; // pula para o estado de jal
                     end
 
                 endcase
             end
-            state_jump: begin
+            state_jump: begin // ok
                 PCSource <= 2'b00;
                 PCWrite <= 1;
                 state <= state_fetch1;
             end
-            state_jal1: begin
+            state_jal1: begin // ok
                 ALUSrcA <= 0;
                 ALUOp <= 3'b000;
                 state <= state_jal2;
@@ -344,6 +345,7 @@ always @(posedge clk) begin
             
             state_aluout: begin // ver aluOut 2
                 ALUOutCtrl <= 1;
+
             end 
             
             case(OPCODE)
@@ -455,7 +457,7 @@ always @(posedge clk) begin
                 end
             endcase
 
-            state_add: begin
+            state_add: begin // operação com  ULA
                 ALUSrcA <= 1;
                 ALUSrcB <= 2'b00;
                 ALUOp <= 3'b001;
@@ -473,16 +475,34 @@ always @(posedge clk) begin
                 ALUOp <= 3'b010;
                 state <= state_aluout2;
             end
-            state_aluout2: begin
+            // checar se houve overflow e então ir para o estado de overflow, se não, ir para o estado de escrita (state_add_sub_and)
+            state_aluout2: begin // colocando em ALUOut
                 ALUOutCtrl <= 1;
             end
             state_add_sub_and: begin
                 RegDst = 3'b011;
                 MemtoReg = 4'b0000; // 000 001 010 011 100 101 110 111
                 RegWrite = 1;
-                // state <= wait2;
+                state <= wait1;
+            end
+            wait1: begin
+                state <= state_fetch1; // checar se ele realiza um ciclo antes de mudar pra fetch1
+            end
+            // state_div: begin
+            //     DivCtrl <= 1;
+            //     state <= wait4;
+            // end
+            // state_mult: begin
+            //     MultCtrl <= 1;
+            //     state <= wait5;
+            // end
+            state_jr: begin
+                PCSource <= 2'b01;
+                PCWrite <= 1;
+                state <= wait6;
             end
 
+            
 
             
             
