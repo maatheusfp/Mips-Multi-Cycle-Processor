@@ -1,17 +1,13 @@
 module MDR(
-    input wire [31:0] MemDatatoMDR;
-    output reg [31:0] MDRtoWordCracker;
-    output reg [7:0] MDRtoSignExtend;
-    output reg [31:0] MDRtoLoadSize; 
-    output reg [31:0] MDRtoMemtoRegMUX;
-    output reg [31:0] MDRtoRdcCtrlMUX;
+    input wire [31:0] MemDatatoMDR,
+    input wire MDRWrite,
+    output reg [31:0] MDROut,
+    output reg [7:0] MDROutByte
 );
     always @(*) begin
-            MDRtoWordCracker = MemDatatoMDR;
-            MDRtoSignExtend = MemDatatoMDR[7:0];
-            MDRtoLoadSize = MemDatatoMDR; 
-            MDRtoMemtoRegMUX = MemDatatoMDR;
-            MDRtoRdcCtrlMUX = MemDatatoMDR;
+        case (MDRWrite)
+            MDROut = MemDatatoMDR;
+            MDROutByte = MemDatatoMDR[7:0];
+        endcase           
     end
-
 endmodule
