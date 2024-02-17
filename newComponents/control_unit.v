@@ -199,13 +199,17 @@ parameter wait6 = 7'd65;
 
 parameter state_slt = 7'd66;
 
-parameter state_add_sub_and = 7'd67;
+parameter state_and_sub_and = 7'd67; // separou state_add_sub_and pq cada um tem um aluOp diferente
+parameter state_add = 7'd81;
+parameter state_sub = 7'd82;
+parameter state_and = 7'd83;
+
 
 parameter state_overflow1 = 7'd68;
 parameter state_overflow2 = 7'd69;
 parameter state_overflow3 = 7'd70;
 
-parameter state_opcode_error1 = 7'd71;
+parameter state_opcode_error1 = 7'd71; // opcode inxeistente?
 parameter state_opcode_error2 = 7'd72;
 parameter state_opcode_error3 = 7'd73;
 
@@ -337,4 +341,151 @@ always @(posedge clk) begin
                 
                 state <= wait1;
             end
+            
+            state_aluout: begin // ver aluOut 2
+                ALUOutCtrl <= 1;
+            end 
+            
+            case(OPCODE)
+                default: begin
+                    state <= state_opcode_error1;
+                end
+                R_OPCODE: begin
+                    case(FUNCT)
+
+                        // intruções tipo R
+                        ADD_FUNCT: begin
+                            state <= state_add; 
+                        end
+                        AND_FUNCT: begin
+                            state <= state_and; 
+                        end
+                        DIV_FUNCT: begin
+                            state <= state_div; 
+                        end
+                        MULT_FUNCT: begin
+                            state <= state_mult; 
+                        end
+                        JR_FUNCT: begin
+                            state <= state_jr; 
+                        end
+                        MFHI_FUNCT: begin
+                            state <= state_mfhi; 
+                        end
+                        MFLO_FUNCT: begin
+                            state <= state_mflo; 
+                        end
+                        SLL_FUNCT: begin
+                            state <= state_sll1; 
+                        end
+                        SLLV_FUNCT: begin
+                            state <= state_sllv; 
+                        end
+                        SLT_FUNCT: begin
+                            state <= state_slt; 
+                        end
+                        SRA_FUNCT: begin
+                            state <= state_sra1; 
+                        end
+                        SRAV_FUNCT: begin
+                            state <= state_srav; 
+                        end
+                        SRL_FUNCT: begin
+                            state <= state_srl1; 
+                        end
+                        SUB_FUNCT: begin
+                            state <= state_sub; 
+                        end
+                        BREAK_FUNCT: begin
+                            state <= state_break1; 
+                        end
+                        RTE_FUNCT: begin
+                            state <= state_rte; 
+                        end
+                        XCHG_FUNCT: begin
+                            state <= state_xchg1; 
+                        end
+                    endcase
+                end
+                // instruções tipo I
+                ADDI: begin
+                    state <= state_addi_slti1;
+                end
+                ADDIU: begin
+                    state <= state_addiu1;
+                end
+                BEQ: begin
+                    state <= state_beq;
+                end
+                BNE: begin
+                    state <= state_bne;
+                end
+                BLE: begin
+                    state <= state_ble;
+                end
+                BGT: begin
+                    state <= state_bgt;
+                end
+                SRAM: begin
+                    state <= state_store1;
+                end
+                LB: begin
+                    state <= state_load1;
+                end
+                LH: begin
+                    state <= state_load1;
+                end
+                LUI: begin
+                    state <= state_lui;
+                end
+                LW: begin
+                    state <= state_load1;
+                end
+                SB: begin
+                    state <= state_store1;
+                end
+                SH: begin
+                    state <= state_store1;
+                end
+                SLTI: begin
+                    state <= state_addi_slti1;
+                end
+                SW: begin
+                    state <= state_store1;
+                end
+            endcase
+
+            state_add: begin
+                ALUSrcA <= 1;
+                ALUSrcB <= 2'b00;
+                ALUOp <= 3'b001;
+                state <= state_aluout2;
+            end
+            state_and: begin
+                ALUSrcA <= 1;
+                ALUSrcB <= 2'b00;
+                ALUOp <= 3'b011;
+                state <= state_aluout2;
+            end
+            state_sub: begin
+                ALUSrcA <= 1;
+                ALUSrcB <= 2'b00;
+                ALUOp <= 3'b010;
+                state <= state_aluout2;
+            end
+            state_aluout2: begin
+                ALUOutCtrl <= 1;
+            end
+            state_add_sub_and: begin
+                RegDst = 3'b011;
+                MemtoReg = 4'b0000; // 000 001 010 011 100 101 110 111
+                RegWrite = 1;
+                // state <= wait2;
+            end
+
+
+            
+            
+
+
             
