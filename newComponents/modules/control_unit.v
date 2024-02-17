@@ -702,7 +702,7 @@ always @(posedge clk) begin
                 ALUSrcA <= 1;
                 ALUSrcB <= 2'b10;
                 ALUOp <= 3'b001;
-                Ignore <= 1;
+                ignore <= 1;
                 state <= state_addi2_addiu2;
             end 
 
@@ -986,7 +986,7 @@ always @(posedge clk) begin
                 IorD <= 3'b001;
                 ENDwrite <= 1;
                 MemRead_Write <= 1;
-                Ignore <= 1;
+                ignore <= 1;
                 state <= state_overflow2;
             end
 

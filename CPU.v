@@ -1,4 +1,4 @@
-`include "newComponents/muxes/MemtoRegMUX.v"
+`include "newComponents/muxes/MemtoRegMUX.v"  // verificar se o import eh necessario (no de fred ta comentado)
 `include "newComponents/muxes/aluToPc.v"
 `include "newComponents/muxes/aToAlu.v"
 `include "newComponents/muxes/aToReg_desloc.v"
@@ -19,17 +19,18 @@
 `include "componentesFornecidos/Instr_Reg.vhd"
 `include "componentesFornecidos/Banco_reg.vhd"
 
-`include "newComponents/hi.v"
-`include "newComponents/lo.v"
-`include "newComponents/Load.v"
-`include "newComponents/shiftLeft2"
-`include "newComponents/singExtend_1x32.v"
-`include "newComponents/singExtend_8x32.v"
-`include "newComponents/singExtend_16x32.v"
-`include "newComponents/singExtend_32x5.v"
-`include "newComponents/word_cracker.v"
-`include "newComponents/mult.v"
-`include "newComponents/div.v"
+`include "newComponents/modules/hi.v"
+`include "newComponents/modules/lo.v"
+`include "newComponents/modules/Load.v"
+`include "newComponents/modules/shiftLeft2"
+`include "newComponents/modules/singExtend_1x32.v"
+`include "newComponents/modules/singExtend_8x32.v"
+`include "newComponents/modules/singExtend_16x32.v"
+`include "newComponents/modules/singExtend_32x5.v"
+`include "newComponents/modules/word_cracker.v"
+`include "newComponents/modules/mult.v"
+`include "newComponents/modules/div.v"
+`include "newComponents/modules/mdr.v"
 
 module CPU(
     input wire clock,
@@ -38,53 +39,46 @@ module CPU(
 
 // sinais de controle: 
 
-    // Reset
-    wire Reset;
-
-    // sinais de escrita
+        // 1 bit
+    wire Reset;  // ainda nao achei funcionalidade
     wire PCWriteCond;
     wire PCWrite;
-    wire MemWrite_Read;  // lida = 0, escrita = 1
-    wire IRwrite; 
-    wire RegWrite; 
-
-    // sinais de escolha de fonte de dados
-    wire PCSource [3:0];
-    wire ALUSrcA [1:0];
-    wire ALUsrcB [1:0];
-    wire IorD [5:0];
-    wire RegDst [2:0];
-    wire MemtoReg [3:0];
-    wire divCtrl [1:0];
-    wire multCtrl [1:0];
-    wire ShiftCtrl [1:0];
-    wire ignore [1:0];
-    wire BranchCtrl [1:0];
-
-    // sinais Ctrl
-    wire SHIPTOp3 [1:0];
-    wire LoadControl;
-    wire BranchControl [3:0];
-    wire EPCControl;
-    wire ALUOp;
-    wire WriteDataCtrl [1:0];
-    wire WordCrackerCtrl;
-    wire ShiftCtrl [2:0];
-    wire EntryCtrl [2:0];
-    wire ReduceCtrl [2:0];
+    wire MDRwrite;
+    wire ENDwrite;
+    wire IRwrite;
+    wire RegWrite;
+    wire ShiftOp3;
+    wire Awrite;
+    wire Bwrite;
     wire HiCtrl;
     wire LoCtrl;
     wire ALUOutCtrl;
-    // div e mult ctrl tem em dois lugares (talvez dois diferentes para o mux?)
-
-    // Loads
-    wire AB_Load;
-    wire MDR_Load;
-    wire END_Load;
-
-    // excecoes
-    wire Ignore [1:0];
+    wire EPCControl;
+    wire ignore;
+    wire DivMultCtrl;
+    wire MemRead_Write;
+    wire DivCtrl;
+    wire MultCtrl;
+    wire reset_out;    
     wire Overflow;
+
+    // 2 bits
+    wire WriteDataCtrl;
+    wire [1:0] ALUSrcB;
+    wire [1:0] EntryCtrl;
+    wire [1:0] WordCrackerCtrl;
+    wire [1:0] BranchControl;
+    wire [1:0] PCSource;
+    wire [1:0] ShiftCtrl;
+    wire [1:0] LoadControl;
+
+    // 3 bits
+    wire [2:0] IorD;
+    wire [2:0] RegDst;
+    wire [2:0] ALUOp;
+
+    // 4 bits
+    wire [3:0] MemtoReg;
 
     // Os proximos fios nomeei a partir de onde saem
 
@@ -113,17 +107,19 @@ module CPU(
 
     // ULA
     wire ALU [31:0];
-    wire Zero;
+    wire ZeroULA;
+    wire ZeroMux;
     wire LT; // Lower than
     wire GT; // greater than
     wire ET; // equal to
     wire Negative; 
 
-    // MDR
-    wire MDR [31:0];
+    // MDROut
+    wire MDROut [31:0];
+    wire MDROut [7:0];
 
     // Word Cracker
-    wire WordCrackerOUT; // nao lembro qtos bits
+    wire WordCrackerOUT [31:0]; // nao lembro qtos bits
 
     // Load Size
     wire LoadSize [31:0];
@@ -229,7 +225,7 @@ module CPU(
     and(BranchCtrlMUXOut, PCWriteCond, WriteCondANDtoPCWriteOR); // (input, input, output)
     or(WriteCondANDtoPCWriteOR, PCWrite, PCWriteORtoPC);
     or(LT,GT, LTGTORtoBranchMUX);
-    or(LT, Zero, LTZerotoBranchMUX);
+    or(LT, ZeroULA, LTZerotoBranchMUX);
 
     Registrador PC(
         clock,
@@ -242,7 +238,7 @@ module CPU(
     Registrador A(
         clock,
         reset,
-        AB_Load,
+        Awrite,
         ReadData1,
         RegA
     );
@@ -250,7 +246,7 @@ module CPU(
     Registrador B(
         clock,
         reset,
-        AB_Load,
+        Bwrite,
         ReadData2,
         RegB
     );
@@ -263,15 +259,22 @@ module CPU(
         ALUOut
     );
 
-    Registrador MDRReg(  // em uma das saídas do mdr ele envia apenas 8 bits, verificar como faze isso
-        clock,
-        reset,
-        MDR_Load,
+    MDR MDRReg(
         MemOut,
-        MDR
+        MDRWrite,
+        MDROut,
+        MDROutByte
     );
 
-    Registrador EPC(
+    /* Registrador MDRReg(  // em uma das saídas do mdr ele envia apenas 8 bits, verificar como faz isso
+        clock,
+        reset,
+        MDRwrite,
+        MemOut,
+        MDROut
+    ); */
+
+    Registrador EPCReg(
         clock,
         reset,
         EPCControl,
@@ -282,7 +285,7 @@ module CPU(
     Registrador ENDReg(
         clock, 
         reset,
-        END_Load,
+        ENDwrite,
         PCOut,
         ENDtoEPC
     );
@@ -290,7 +293,7 @@ module CPU(
     Memoria MEM_(
         clock,
         reset,
-        MemWrite_Read,
+        MemRead_Write,
         MemControlMUXOut, 
         MemOut
     );
@@ -303,7 +306,7 @@ module CPU(
         IR31_26,
         IR25_21,
         IR20_16,
-        IR15_0  //Fica faltando o 10_6 pq nao tem no IR pronto
+        IR15_0[10:6]  //Fica faltando o 10_6 pq nao tem no IR pronto
     );
 
     Banco_reg BR(
@@ -322,18 +325,18 @@ module CPU(
     MemtoRegMUX MEMTOREGMUX(
         RD,
         SE1_32,
-        MDR,
+        MDROut,
         ALUOut,
         LO,
         HI,
         reg227,
         LoadSize,
         MemtoReg,
-        RegDstMUXOut
+        MemtoRegMUXOut
     );
     
     aluToPc BranchCtrlMUX(
-        zero,
+        ZeroULA,
         GT,
         LT,
         LTGTORtoBranchMUX,
@@ -358,17 +361,18 @@ module CPU(
 
     bToAlu ALUSrcBMUX(
         RegB,
-        reg4,
+        reg4, // valor 4
         SE16_32,
-        SLOut,
+        SLOutBAIXO,
         ALUsrcB,
         ALUSrcAMUXOut
     ); 
 
     epcToPc PCSourceMUX(
-        SLOut,
+        SLOutCIMA,
         EPC,
         ALUOut,
+        SE8_32,
         PCSource,
         PCSourceMUXOut
     );
@@ -398,14 +402,14 @@ module CPU(
     );
 
     mdaToSign32_5 ReduceCtrlMUX(
-        MDR,
+        MDROut,
         RegB,
         RdcCtrl,
         ReduceCtrlMUXOut
     );
 
     overflowToControl_unit IgnoreMUX(
-        zero,
+        ZeroMux,
         Overflow,
         ignore,
         IgnoreMUXOut
@@ -431,7 +435,7 @@ module CPU(
     );
 
     wcToMem WriteDataCtrlMUX(
-        WordCracker,
+        WordCrackerOUT,
         RegB,
         WriteDataCtrl,
         WriteDataCtrlMUXOutj
@@ -457,7 +461,7 @@ module CPU(
     );
 
     Load LoadSizeReg(
-        MDR,
+        MDROut,
         LoadControl,
         LoadSize
     );
@@ -478,7 +482,7 @@ module CPU(
     );
 
     singExtend_8x32 SE8_32Reg(
-        MDR, // mdr aqui eh so 8 bits
+        MDROut, // mdr aqui eh so 8 bits
         SE8_32
     );
 
@@ -492,10 +496,12 @@ module CPU(
         SE32_5
     );
 
-    /* WordCracker WC(
-        MDR,
-
-    ) */
+    WordCracker WC(
+        RegB,
+        MDROut,
+        WordCrackerCtrl,
+        WordCrackerOUT
+    );
 
     /* mult multReg(
         clock,
@@ -504,3 +510,53 @@ module CPU(
         RegB,
     ) */
 
+    control_unit Control_Unit(
+        .clk(clock),
+        .reset(reset),
+
+        .OPCODE(IR31_26),
+        .FUNCT(IR15_0[5:0]),
+
+        .Overflow(Overflow), // nao entendi bem a funcionalidade
+        /* .DivZero(),
+        .GT() */
+
+        .IorD(IorD),
+        .WriteDataCtrl(WriteDataCtrl),
+        .RegDst(RegDst),
+        .MemtoReg(MemtoReg),
+        .ReduceCtrl(ReduceCtrl),
+        .ShiftCtrl(ShiftCtrl),
+        .EntryCtrl(EntryCtrl),
+        .ALUSrcA(ALUSrcA),
+        .ALUSrcB(ALUSrcB),
+        .ignore(ignore),
+        .DivMultCtrl(DivMultCtrl),
+        .BranchControl(BranchControl),
+        .PCSource(PCSource),
+
+        .PCWriteCond(PCWriteCond),
+        .PCWrite(PCWrite),
+        .MDRWrite(MDRWrite),
+        .ENDwrite(ENDwrite),
+        .IRwrite(IRwrite),
+        .RegWrite(RegWrite),
+        .ShiftOp3(ShiftOp3),
+        .Awrite(Awrite),
+        .Bwrite(Bwrite),
+        .HiCtrl(HiCtrl),
+        .LoCtrl(LoCtrl),
+        .ALUOutCtrl(ALUOutCtrl),
+        .EPCControl(EPCControl),
+
+        .WordCrackerCtrl(WordCrackerCtrl),
+        .MemRead_Write(MemRead_Write),
+        .LoadControl(LoadControl),
+        .ALUOp(ALUOp),
+        .DivCtrl(DivCtrl),
+        .MultCtrl(MultCtrl)
+
+        .reset_out(reset_out)
+    );
+
+endmodule 

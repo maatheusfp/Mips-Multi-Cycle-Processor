@@ -1,5 +1,5 @@
 module WordCracker(
-  input wire [31:0] word,
+  input wire [31:0] word, // o que vem de B
   input wire [31:0] memory,
   input wire [1:0] WordCrackerCtrl,
   output reg [31:0] out
