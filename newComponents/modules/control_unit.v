@@ -33,7 +33,7 @@ module control_unit(
     output reg ENDwrite,
     output reg IRwrite,
     output reg RegWrite, 
-    output reg SHIPTOp3,
+    output reg ShiftOp3,
     output reg Awrite,
     output reg Bwrite,
     output reg HiCtrl,
@@ -175,6 +175,7 @@ parameter wait3 = 7'd49;
 parameter state_ula = 7'd50;
 
 parameter state_aluout2 = 7'd51;
+parameter state_aluout3 = 7'd84;
 
 parameter state_bgt = 7'd53;
 
@@ -195,6 +196,7 @@ parameter state_mult = 7'd62;
 parameter wait5 = 7'd63;
 
 parameter state_jr = 7'd64;
+parameter state_jr2 = 7'd85;
 parameter wait6 = 7'd65;
 
 parameter state_slt = 7'd66;
@@ -254,7 +256,7 @@ always @(posedge clk) begin
         ENDwrite <= 0; 
         IRwrite <= 0;
         RegWrite <= 0;  
-        SHIPTOp3 <= 0; 
+        ShiftOp3 <= 0; 
         Awrite <= 0; 
         Bwrite <= 0; 
         HiCtrl <= 0; 
@@ -488,21 +490,80 @@ always @(posedge clk) begin
             wait1: begin
                 state <= state_fetch1; // checar se ele realiza um ciclo antes de mudar pra fetch1
             end
+
+
             // state_div: begin
             //     DivCtrl <= 1;
-            //     state <= wait4;
+            //     state <= wait1;
             // end
             // state_mult: begin
             //     MultCtrl <= 1;
-            //     state <= wait5;
+            //     state <= wait1;
             // end
-            state_jr: begin
-                PCSource <= 2'b01;
-                PCWrite <= 1;
-                state <= wait6;
+
+            state_jr: begin // operacao com a ULA
+                ALUSrcA <= 1;
+                ALUSrcB <= 2'b00;
+                ALUOp <= 3'b000; // carregamento
+                state <= wait1;
             end
 
-            
+            state_aluout3: begin // colocando em ALUOut
+                ALUOutCtrl <= 1;
+            end
+
+            state_jr2: begin // atualizacao do pc
+                PCSource <= 2'b10;
+                PCWrite <= 1;
+                state <= wait1;
+            end
+
+            // todos a partir de agora ja passaram pelo estado 4 (colocando em aluOUt)
+            state_mfhi: begin // carregamento: hi -> rd
+                RegDst <= 3'b011;
+                MemtoReg <= 4'b0110;
+                RegWrite <= 1;
+                state <= wait1;
+            end
+            state_mflo: begin // carregamento: lo -> rd
+                RegDst <= 3'b011;
+                MemtoReg <= 4'b1000;
+                RegWrite <= 1;
+                state <= wait1;
+            end
+
+            state_sll1: begin // load shamt no registrador de deslocamento
+                ShiftCtrl <= 2'b10;
+                EntryCtrl <= 2'b01;
+                ShiftOp3 <= 3'b001; // load
+                state <= state_sll2;
+            end
+
+            state_sll2: begin // deslocamento
+                ShiftCtrl <= 2'b10;
+                EntryCtrl <= 2'b01;
+                ShiftOp3 <= 3'b010; // shift
+                state <= state_RDBR;
+            end
+
+            state_sllv: begin // leva o q vem de A e B para o RD
+                EntryCtrl <= 2'b10;
+                ReduceCtrl <= 0;
+                ShiftCtrl <= 2'b00;
+                ShiftOp3 <= 3'b010; 
+                state <= state_RDBR;
+            end
+
+            // slt
+            state_slt: begin // operacao com a ULA
+                ALUSrcA <= 1;
+                ALUSrcB <= 2'b00;
+                ALUOp <= 3'b111;
+                state <= state_aluout3;
+            end
+
+
+
 
             
             
