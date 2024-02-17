@@ -127,6 +127,7 @@ parameter state_sram6 = 7'd92;
 parameter state_sram7 = 7'd93;
 
 parameter state_RDBR = 7'd16;
+parameter state_RTBR = 7'd99;
 
 parameter wait2 = 7'd17;
 
@@ -171,15 +172,17 @@ parameter state_lb = 7'd94;
 parameter state_lh = 7'd95;
 parameter state_load6 = 7'd42;
 
-parameter state_sw = 7'd43;
+parameter state_sw = 7'd43;  // 1, 2, 3, 4, 5, 6, separa, escrita na memoria 
 parameter state_sh = 7'd49;
 parameter state_sb = 7'd96;
 
+parameter state_store1 = 7'd97;
 parameter state_store2 = 7'd44;
 parameter state_store3 = 7'd45;
 parameter state_store4 = 7'd46;
 parameter state_store5 = 7'd47;
 parameter state_store6 = 7'd48;
+parameter state_store8 = 7'd98;
 
 
 parameter state_ula = 7'd50;
@@ -460,16 +463,16 @@ always @(posedge clk) begin
                         state <= state_load1;
                     end
                     SB: begin
-                        state <= state_sb;
+                        state <= state_store1;
                     end
                     SH: begin
-                        state <= state_sh;
+                        state <= state_store1;
                     end
                     SLTI: begin
                         state <= state_slti1;
                     end
                     SW: begin
-                        state <= state_sw;
+                        state <= state_store1;
                     end
                 endcase               
             end 
@@ -781,7 +784,7 @@ always @(posedge clk) begin
                 ShiftCtrl <= 2'b00;
                 EntryCtrl <= 2'b01;
                 ShiftOp3 <= 3'b100;
-                state <= state_RDBR;
+                state <= state_RTBR;
             end
 
             state_load1: begin
@@ -844,7 +847,7 @@ always @(posedge clk) begin
                 EntryCtrl <= 2'b00;
                 ShiftCtrl <= 2'b01;
                 ShiftOp3 <= 3'010;
-                state <= state_RDBR;
+                state <= state_RTBR;
             end
 
             state_slti1: begin 
@@ -866,7 +869,93 @@ always @(posedge clk) begin
                 state <= state_fetch1;
             end 
 
-            state_sw: begin 
+            state_store1: begin
+                ALUSrcA <= 1;
+                ALUSrcB <= 2'b10;
+                ALUOp  <= 3'001;
+                state <= state_store2;
+            end
+            
+            state_store2: begin
+                ALUOutCtrl <= 1;
+                state <= state_store3;
+            end
+
+            state_store3: begin
+                MemWrite_Read <= 0;
+                IorD <= 3'b101;
+                state <= state_store4;
+            end
+
+            state_store4: begin
+                state <= state_store5;
+            end
+
+            state_store5: begin 
+                state <= state_store6;
+            end
+
+            state_store6: begin 
+                MDRwrite <= 1;
+                case(OPCODE)
+                    SW: begin
+                        state <= state_sw;
+                    end
+                    SB: begin 
+                        state <= state_sb;
+                    end
+                    SH: begin 
+                        state <= state_sh;
+                    end
+                endcase
+            end
+
+            state_sw: begin
+                WordCrackerCtrl <= 00;
+                state <= state_store8;
+            end
+
+            state_sb: begin
+                WordCrackerCtrl <= 10;
+                state <= state_store8;
+            end
+
+            state_sh: begin
+                WordCrackerCtrl <= 01;
+                state <= state_store8;
+            end
+
+            state_store8: begin 
+                WriteDataCtrl <= 1;
+                MemRead_Write <= 1;
+                state <= wait1;
+            end 
+
+            state_RDBR: begin 
+                MemtoReg <= 4'b0011;
+                RegDst <= 3'b011;
+                RegWrite <= 1;
+                state <= wait1;
+            end
+
+            state_RTBR: begin 
+                MemtoReg <= 4'b0011;
+                RegDst <= 3'b000;
+                RegWrite <= 1;
+                state <= wait1;
+            end
+
+            wait1: begin 
+                state <= state_fetch1;
+            end
+            
+
+
+
+
+
+
+
                 
 
 
