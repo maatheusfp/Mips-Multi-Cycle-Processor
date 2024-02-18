@@ -1,37 +1,3 @@
-/* `include "newComponents/muxes/MemtoRegMUX.v"  // verificar se o import eh necessario (no de fred ta comentado)
-`include "newComponents/muxes/aluToPc.v"
-`include "newComponents/muxes/aToAlu.v"
-`include "newComponents/muxes/aToReg_desloc.v"
-`include "newComponents/muxes/bToAlu.v"
-`include "newComponents/muxes/epcToPc.v"
-`include "newComponents/muxes/hi.v"
-`include "newComponents/muxes/irToReg.v"
-`include "newComponents/muxes/lo.v"
-`include "newComponents/muxes/mdaToSign32_5.v"
-`include "newComponents/muxes/overflowToControl_unit.v"
-`include "newComponents/muxes/pcToMem.v"
-`include "newComponents/muxes/sign32_5ToReg_desloc.v"
-`include "newComponents/muxes/wcToMem.v"
-`include "newComponents/muxes/MemControl.v"
-
-`include "componentesFornecidos/Registrador.vhd"
-`include "componentesFornecidos/Memoria.vhd"
-`include "componentesFornecidos/Instr_Reg.vhd"
-`include "componentesFornecidos/Banco_reg.vhd"
-
-`include "newComponents/modules/hi.v"
-`include "newComponents/modules/lo.v"
-`include "newComponents/modules/Load.v"
-`include "newComponents/modules/shiftLeft2"
-`include "newComponents/modules/singExtend_1x32.v"
-`include "newComponents/modules/singExtend_8x32.v"
-`include "newComponents/modules/singExtend_16x32.v"
-`include "newComponents/modules/singExtend_32x5.v"
-`include "newComponents/modules/word_cracker.v"
-`include "newComponents/modules/mult.v"
-`include "newComponents/modules/div.v"
-`include "newComponents/modules/mdr.v" */
-
 module CPU(
     input wire clock,
     input wire reset
@@ -185,9 +151,9 @@ module CPU(
     wire EntryCtrlMUXOut [15:0];
 
     // Div/MultCtrl:
-    wire DivCtrlMUXOut [31:0];
-    wire MultCtrlMUXOut [31:0]; 
-
+    wire HiCtrlMUXOut [31:0];
+    wire LOCtrlMUXOut [31:0]; 
+   
     // ALUSrcA/B:
     wire ALUSrcAMUXOut [31:0];
     wire ALUSrcBMUXOut [31:0];
@@ -211,7 +177,7 @@ module CPU(
     wire [31:0] reg31;
     wire [31:0] reg29;
     wire [31:0] reg227;
-    wire [31:0] reg4;
+    wire [31:0] reg4 = 32'd4;
     wire [31:0] reg16;
 
     //saida das portas logicas
@@ -293,7 +259,7 @@ module CPU(
         clock,
         reset,
         MemRead_Write,
-        MemControlMUXOut, 
+        IorDMUXOut, 
         MemOut
     );
 
@@ -376,11 +342,11 @@ module CPU(
         PCSourceMUXOut
     );
 
-    hi DivCtrlMUX(
+    hi HICtrlMUX(
         Div,
         Mult,
-        divCtrl,
-        DivCtrlMUXOut
+        DivMultCtrl,
+        HiCtrlMUXOut
     );
 
     irToReg RegDstMUX(
@@ -393,11 +359,11 @@ module CPU(
         RegDstMUXOut
     );
 
-    lo MultCtrlMUX(
+    lo LOCtrlMUX(
         Div,
         Mult,
         multCtrl,
-        MultCtrlMUXOut
+        LOCtrlMUXOut
     );
 
     mdaToSign32_5 ReduceCtrlMUX(
@@ -440,21 +406,21 @@ module CPU(
         WriteDataCtrlMUXOutj
     );
 
-    MemControl MemControlMUX(
+    /* MemControl MemControlMUX(
         IorDMUXOut,
         WriteDataCtrlMUXOut,
         MemWrite_Read,
         MemControlMUXOut
-    );
+    ); */
 
     hi HIReg(
-        DivCtrlMUXOut,
+        HiCtrlMUXOut,
         HiCtrl,
         HI
     );
 
     lo LOReg(
-        MultCtrlMUXOut,
+        LOCtrlMUXOut,
         LoCtrl,
         LO
     );
@@ -481,7 +447,7 @@ module CPU(
     );
 
     singExtend_8x32 SE8_32Reg(
-        MDROut, // mdr aqui eh so 8 bits
+        MDROutByte, // mdr aqui eh so 8 bits
         SE8_32
     );
 
