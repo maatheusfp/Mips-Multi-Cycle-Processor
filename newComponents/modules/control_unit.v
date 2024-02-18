@@ -664,7 +664,7 @@ always @(posedge clk) begin
 
             state_xchg2: begin 
                 ALUOutCtrl <= 1;
-                state_xchg3;
+                state <= state_xchg3;
             end
 
             state_xchg3: begin
