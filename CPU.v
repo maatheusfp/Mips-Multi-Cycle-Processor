@@ -311,8 +311,8 @@ module CPU(
     );
 
     aToAlu ALUSrcAMUX(
-        RegA,
         PCOut,
+        RegA,
         ALUSrcA,
         ALUSrcAMUXOut
     );
@@ -327,7 +327,6 @@ module CPU(
 
     bToAlu ALUSrcBMUX(
         RegB,
-        reg4, // valor 4
         SE16_32,
         SLOutBAIXO,
         ALUsrcB,
@@ -351,10 +350,8 @@ module CPU(
     );
 
     irToReg RegDstMUX(
-        reg31,
-        reg29,
-        IR15_0,
         IR20_16,
+        IR15_0[15:11],
         IR25_21,
         RegDst,
         RegDstMUXOut
@@ -375,34 +372,29 @@ module CPU(
     );
 
     overflowToControl_unit IgnoreMUX(
-        ZeroMux,
         Overflow,
         ignore,
         IgnoreMUXOut
     );
 
     pcToMem IorDMUX(
-        AluOut,
         PCOut,
-        reg253,
-        reg254,
-        reg255,
         RD,
+        AluOut,
         IorD,
         IorDMUXOut
     );
 
     sign32_5ToReg_desloc ShiftCtrlMUX(
         se32_5,
-        reg16,
-        IR10_6,
+        IR15_0[10:6],
         ShiftCtrl,
         ShiftCtrlMUXOut
     );
 
     wcToMem WriteDataCtrlMUX(
-        WordCrackerOUT,
         RegB,
+        WordCrackerOUT,
         WriteDataCtrl,
         WriteDataCtrlMUXOutj
     );

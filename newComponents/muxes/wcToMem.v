@@ -8,8 +8,8 @@ module wcToMem(
 
   always @(*) begin
     case (WriteDataCtrl)
-      1'b0: WriteDataCtrlMUXtoMem = WCtoWriteDataCtrlMUX;
-      1'b1: WriteDataCtrlMUXtoMem = BtoWriteDataCtrlMUX;
+      1'b0: WriteDataCtrlMUXtoMem = BtoWriteDataCtrlMUX;
+      1'b1: WriteDataCtrlMUXtoMem = WCtoWriteDataCtrlMUX;
       default: WriteDataCtrlMUXtoMem = 32'b0; // Default value
     endcase
   end
