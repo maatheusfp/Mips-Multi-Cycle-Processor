@@ -433,7 +433,9 @@ module CPU(
     );
 
     shiftLeft2up ShifLeftCIMA( // na parte de cima do circuito
-        {IR25_21, IR20_16, IR15_0}, // 25_0
+        IR25_21,
+        IR20_16,
+        IR15_0, 
         PCOut[31:28],
         SLOutCIMA,
     );
