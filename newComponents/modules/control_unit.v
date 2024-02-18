@@ -151,7 +151,6 @@ parameter state_slti3 = 7'd27;
 parameter state_addiu1 = 7'd28;
 parameter state_addi3_addiu3 = 7'd89;
 
-parameter state_addiu1 = 7'd29;
 parameter state_addiu2 = 7'd30;
 
 parameter state_sra1 = 7'd31;
@@ -816,7 +815,7 @@ always @(posedge clk) begin
             end
             
             state_load4: begin
-                MDRWrite <= 1;
+                MDRwrite <= 1;
                 case(OPCODE)
                     LW: begin
                         state <= state_lw;
@@ -893,7 +892,7 @@ always @(posedge clk) begin
             end
 
             state_store3: begin
-                MemWrite_Read <= 0;
+                MemRead_Write <= 0;
                 IorD <= 3'b101;
                 state <= state_store4;
             end
