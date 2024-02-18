@@ -9,7 +9,7 @@ module irToReg(
 
     always @* begin
         case (RegDst)
-            3'b000: RegDstMUXtoReg = IR20_16toReg  // rt 
+            3'b000: RegDstMUXtoReg = IR20_16toReg;
             3'b001: RegDstMUXtoReg = 5'b11111; // 31  
             3'b010: RegDstMUXtoReg = 5'b11101; // 29 
             3'b011: RegDstMUXtoReg = IR15_11toMUXReg; // rd
