@@ -4,7 +4,7 @@ module lo(
     input wire [31:0] DivtoMultCtrlMUX,
     input wire [31:0] MulttoMultCtrlMUX,
     input wire multCtrl,
-    output reg [1:0] MultCtrlMUXtoLO
+    output reg [31:0] MultCtrlMUXtoLO
 );
 
   always @(*) begin
