@@ -250,7 +250,6 @@ module CPU(
     Memoria MEM_(
         IorDMUXOut,
         clock,
-        reset,
         MemRead_Write,
         WriteDataCtrlMUXOut, 
         MemOut
