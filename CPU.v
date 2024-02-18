@@ -83,7 +83,6 @@ module CPU(
 
     // MDROut
     wire MDROut [31:0];
-    wire MDROutByte [7:0];
 
     // Word Cracker
     wire WordCrackerOUT [31:0]; // nao lembro qtos bits
@@ -224,20 +223,13 @@ module CPU(
         ALUOut
     );
 
-    MDR MDRReg(
-        MemOut,
-        MDRWrite,
-        MDROut,
-        MDROutByte
-    );
-
-    /* Registrador MDRReg(  // em uma das saídas do mdr ele envia apenas 8 bits, verificar como faz isso
+    Registrador MDRReg(
         clock,
         reset,
         MDRwrite,
         MemOut,
         MDROut
-    ); */
+    );
 
     Registrador EPCReg(
         clock,
@@ -457,7 +449,7 @@ module CPU(
     );
 
     signExtend_8x32 SE8_32Reg(
-        MDROutByte, // mdr aqui eh so 8 bits
+        MDROut[7:0], // mdr aqui eh so 8 bits
         SE8_32
     );
 
