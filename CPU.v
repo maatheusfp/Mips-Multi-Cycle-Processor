@@ -27,6 +27,7 @@ module CPU(
     wire MultCtrl;
     wire reset_out;    
     wire Overflow;
+    wire ALUSrcA;
 
     // 2 bits
     wire WriteDataCtrl;
