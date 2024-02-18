@@ -6,8 +6,8 @@ module MDR(
 );
     always @(*) begin
         case (MDRWrite)
-            MDROut = MemDatatoMDR;
-            MDROutByte = MemDatatoMDR[7:0];
+            MDROut <= MemDatatoMDR;
+            MDROutByte <= MemDatatoMDR[7:0];
         endcase           
     end
 endmodule

@@ -1,4 +1,4 @@
-`include "newComponents/muxes/MemtoRegMUX.v"  // verificar se o import eh necessario (no de fred ta comentado)
+/* `include "newComponents/muxes/MemtoRegMUX.v"  // verificar se o import eh necessario (no de fred ta comentado)
 `include "newComponents/muxes/aluToPc.v"
 `include "newComponents/muxes/aToAlu.v"
 `include "newComponents/muxes/aToReg_desloc.v"
@@ -30,7 +30,7 @@
 `include "newComponents/modules/word_cracker.v"
 `include "newComponents/modules/mult.v"
 `include "newComponents/modules/div.v"
-`include "newComponents/modules/mdr.v"
+`include "newComponents/modules/mdr.v" */
 
 module CPU(
     input wire clock,
