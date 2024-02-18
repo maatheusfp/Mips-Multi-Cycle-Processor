@@ -19,7 +19,7 @@ module MemtoRegMUX(
             4'b0010: RegDstMUXtoReg = MemDatatoMemtoRegMUX;
             4'b0011: RegDstMUXtoReg = RDtoMemtoRegMUX;
             4'b0100: RegDstMUXtoReg = SE1_32toMemtoRegMUX ;
-            4'b0101: RegDstMUXtoReg = reg227; // mudar para 227 em bits
+            4'b0101: RegDstMUXtoReg = 32'd227; // mudar para 227 em bits
             4'b0110: RegDstMUXtoReg = RegB;
             4'b0111: RegDstMUXtoReg = HItoMemtoRegMUX;
             4'b1000: RegDstMUXtoReg = LOtoMemtoRegMUX;

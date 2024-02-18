@@ -50,122 +50,122 @@ module CPU(
     // Os proximos fios nomeei a partir de onde saem
 
     // Sai de PC
-    wire PCOut [31:0];
+    // PCOut:
+    wire [31:0] PCOut;
 
-    //Sai de Memory 
-    wire MemOut [31:0];
+    // MemOut:
+    wire [31:0] MemOut;
 
-    // IR
-    wire IR31_26 [5:0];
-    wire IR25_21 [4:0];
-    wire IR20_16 [4:0];
-    wire IR10_6 [4:0];
-    wire IR15_0 [15:0];
+    // IR:
+    wire [5:0] IR31_26;
+    wire [4:0] IR25_21;
+    wire [4:0] IR20_16;
+    wire [4:0] IR10_6;
+    wire [15:0] IR15_0;
 
     // Registradores - Falta a quantidade de bits
-    wire ReadData1 [31:0];
-    wire ReadData2 [31:0]; 
+    wire [31:0] ReadData1;
+    wire [31:0] ReadData2;
 
     // Registrador A
-    wire RegA [31:0]; // nao tenho ctz da qtd de bits
+    wire [31:0] RegA; // nao tenho ctz da qtd de bits
 
     // Registrador B 
-    wire RegB [31:0];
+    wire [31:0] RegB;
 
     // ULA
-    wire ALU [31:0];
+    wire [31:0] ALU;
     wire ZeroULA;
-    wire ZeroMux;
     wire LT; // Lower than
     wire GT; // greater than
     wire ET; // equal to
     wire Negative; 
 
     // MDROut
-    wire MDROut [31:0];
+    wire [31:0] MDROut;
 
     // Word Cracker
-    wire WordCrackerOUT [31:0]; // nao lembro qtos bits
+    wire [31:0] WordCrackerOUT; // nao lembro qtos bits
 
     // Load Size
-    wire LoadSize [31:0];
+    wire [31:0] LoadSize;
 
     //Registrador de Deslocamento
-    wire RD [31:0];
+    wire [31:0] RD;
 
     // DIV
-    wire Div [31:0];
+    wire [31:0] Div;
 
     // MULT
-    wire Mult [31:0];
+    wire [31:0] Mult;
 
     // AluOut:
-    wire ALUOut [31:0];
+    wire [31:0] ALUOut;
 
     // EPC: 
-    wire EPC [31:0]; 
+    wire [31:0] EPC; 
 
     // HI/LO:
-    wire HI [15:0]; 
-    wire LO [15:0]; 
+    wire [15:0] HI; 
+    wire [15:0] LO; 
 
     // SHIFTLEFTCIMA:
-    wire SLOutCIMA [31:0];
-    wire SLOutBAIXO [31:0];
+    wire [31:0] SLOutCIMA;
+    wire [31:0] SLOutBAIXO;
 
     // END:
-    wire ENDtoEPC [31:0]; // nao tenho ctz 
+    wire [31:0] ENDtoEPC; // nao tenho ctz 
 
     // SignExtend(16 - 32):
-    wire SE16_32 [31:0];
+    wire [31:0] SE16_32;
 
     // SignExtend (1 - 32);
-    wire SE1_32 [31:0];
+    wire [31:0] SE1_32;
 
     // SignExtend (8-32);
-    wire SE8_32 [31:0];
+    wire [31:0] SE8_32;
 
     // SignExtend (32 - 5);
-    wire SE32_5 [4:0];
+    wire [4:0] SE32_5;
 
     // MUXES:
     // IorD:
-    wire IorDMUXOut [31:0];
+    wire [31:0] IorDMUXOut;
 
     // WriteDataCtrlMUX:
-    wire WriteDataCtrlMUXOut [31:0]; // nao tenho ctz;
+    wire [31:0] WriteDataCtrlMUXOut; // nao tenho ctz;
 
     // RegDst;
-    wire RegDstMUXOut [4:0];
+    wire [4:0] RegDstMUXOut;
 
     // MemtoReg;
-    wire MemtoRegMUXOut [31:0]; 
+    wire [31:0] MemtoRegMUXOut; 
 
     // ReduceCtrl:
-    wire ReduceCtrlMUXOut [31:0];
+    wire [31:0] ReduceCtrlMUXOut;
 
     // ShiftCtrl:
-    wire ShiftCtrlMUXOut [15:0];
+    wire [15:0] ShiftCtrlMUXOut;
 
     // EntryCtrl:
-    wire EntryCtrlMUXOut [15:0];
+    wire [15:0] EntryCtrlMUXOut;
 
     // Div/MultCtrl:
-    wire HiCtrlMUXOut [31:0];
-    wire LOCtrlMUXOut [31:0]; 
-   
+    wire [31:0] HiCtrlMUXOut;
+    wire [31:0] LOCtrlMUXOut; 
+
     // ALUSrcA/B:
-    wire ALUSrcAMUXOut [31:0];
-    wire ALUSrcBMUXOut [31:0];
+    wire [31:0] ALUSrcAMUXOut;
+    wire [31:0] ALUSrcBMUXOut;
 
     // PCSource:
-    wire PCSourceMUXOut [31:0];
+    wire [31:0] PCSourceMUXOut;
 
     // BranchControl:
     wire BranchCtrlMUXOut;
 
     // MemControl
-    wire MemControlMUXOut [31:0];
+    wire [31:0] MemControlMUXOut;
 
     // Ignore:
     wire IgnoreMUXOut; 
@@ -280,22 +280,24 @@ module CPU(
 
   // muxes
     MemtoRegMUX MEMTOREGMUX(
+        ALUOut,
+        LoadSize,
+        MDROut,
         RD,
         SE1_32,
-        MDROut,
-        ALUOut,
-        LO,
-        HI,
         reg227,
-        LoadSize,
+        RegB,
+        HI,
+        LO,
         MemtoReg,
         MemtoRegMUXOut
     );
     
     aluToPc BranchCtrlMUX(
-        GT,
-        LT,
         LTGTORtoBranchMUX,
+        LT,
+        ZeroULA,
+        GT,
         BranchCtrl,
         BranchCtrlMUXOut
     );
