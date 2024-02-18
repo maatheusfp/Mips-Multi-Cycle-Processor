@@ -284,7 +284,6 @@ module CPU(
         MDROut,
         RD,
         SE1_32,
-        reg227,
         RegB,
         HI,
         LO,
