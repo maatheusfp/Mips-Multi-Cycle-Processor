@@ -1,10 +1,9 @@
 module MemtoRegMUX( 
     input wire [31:0] ALUOuttoMemtoRegMUX,
-    input wire [31:0] LoadSizetoMemtoRegMUX ,
+    input wire [31:0] LoadSizetoMemtoRegMUX,
     input wire [31:0] MemDatatoMemtoRegMUX,
     input wire [31:0] RDtoMemtoRegMUX,
     input wire [31:0] SE1_32toMemtoRegMUX ,
-    input wire [31:0] reg227,
     input wire [31:0] RegB,
     input wire [31:0] HItoMemtoRegMUX,
     input wire [31:0] LOtoMemtoRegMUX,
