@@ -411,6 +411,19 @@ module CPU(
         LO
     ); */
 
+    ula32 ALU(
+        RegA,
+        RegB,
+        ALUOp,
+        ALU,
+        Overflow,
+        Negative,
+        ET,  // nao serve pra nada
+        ZeroULA,
+        GT,
+        LT
+    );
+
     Registrador HiReg(
         clock,
         reset,
