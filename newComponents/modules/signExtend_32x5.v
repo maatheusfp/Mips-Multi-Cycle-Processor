@@ -4,10 +4,11 @@ module signExtend_32x5 ( // takes the 5 most significant bits of a 32 bit number
 );
 
   always @(*) begin
-    if (rdcCtrlMUX_toSE32_5[31] == 1) // verify if the 32th bit (most significant bit) is 1 = negative
+    se32x5ToShift_ctrlMUX = rdcCtrlMUX_toSE32_5[4:0];
+    /* if (rdcCtrlMUX_toSE32_5[31] == 1) // verify if the 32th bit (most significant bit) is 1 = negative
       se32x5ToShift_ctrlMUX = {27'b11111, rdcCtrlMUX_toSE32_5[31:27]}; 
     else
-      se32x5ToShift_ctrlMUX = {27'b00000, rdcCtrlMUX_toSE32_5[31:27]};
+      se32x5ToShift_ctrlMUX = {27'b00000, rdcCtrlMUX_toSE32_5[31:27]}; */
   end
 
 endmodule
