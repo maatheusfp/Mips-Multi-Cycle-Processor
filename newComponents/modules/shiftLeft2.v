@@ -1,6 +1,6 @@
 //  shift left 2 = multiplies by 4 (2**2)
 
-module shiftleft2 (
+module shiftLeft2 (
     input wire [31:0] IR15_0toShiftLeft,
     output wire [31:0] SLtoAluSrcBMUX
 );
