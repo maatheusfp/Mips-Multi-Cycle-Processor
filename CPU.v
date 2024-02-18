@@ -456,17 +456,17 @@ module CPU(
         SE1_32
     );
 
-    singExtend_8x32 SE8_32Reg(
+    signExtend_8x32 SE8_32Reg(
         MDROutByte, // mdr aqui eh so 8 bits
         SE8_32
     );
 
-    singExtend_16x32 SE16_32Reg(
+    signExtend_16x32 SE16_32Reg(
         IR15_0,
         SE16_32
     );
 
-    singExtend_32x5 SE32_5Reg(
+    signExtend_32x5 SE32_5Reg(
         ReduceCtrlMUXOut,
         SE32_5
     );
