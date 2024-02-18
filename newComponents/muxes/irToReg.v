@@ -3,7 +3,7 @@ module irToReg(
     input wire [4:0] IR20_16toReg,  // rt 
     input wire [4:0] IR15_11toMUXReg, // 15-11 rd 
     input wire [4:0] IR25_21toMUXReg, // 25-21 rs
-    input wire [4:0] RegDst, // 3-bit input to select between 5 inputs
+    input wire [2:0] RegDst, // 3-bit input to select between 5 inputs
     output reg [4:0] RegDstMUXtoReg
 );
 

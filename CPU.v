@@ -106,8 +106,8 @@ module CPU(
     wire [31:0] EPC; 
 
     // HI/LO:
-    wire [15:0] HI; 
-    wire [15:0] LO; 
+    wire [31:0] HI; 
+    wire [31:0] LO; 
 
     // SHIFTLEFTCIMA:
     wire [31:0] SLOutCIMA;
@@ -145,10 +145,10 @@ module CPU(
     wire [31:0] ReduceCtrlMUXOut;
 
     // ShiftCtrl:
-    wire [15:0] ShiftCtrlMUXOut;
+    wire [4:0] ShiftCtrlMUXOut;
 
     // EntryCtrl:
-    wire [15:0] EntryCtrlMUXOut;
+    wire [31:0] EntryCtrlMUXOut;
 
     // Div/MultCtrl:
     wire [31:0] HiCtrlMUXOut;
@@ -176,7 +176,6 @@ module CPU(
     wire [31:0] reg255;
     wire [31:0] reg31;
     wire [31:0] reg29;
-    wire [31:0] reg227;
     wire [31:0] reg16;
 
     //saida das portas logicas
@@ -298,7 +297,7 @@ module CPU(
         LT,
         ZeroULA,
         GT,
-        BranchCtrl,
+        BranchControl,
         BranchCtrlMUXOut
     );
 
@@ -321,7 +320,7 @@ module CPU(
         RegB,
         SE16_32,
         SLOutBAIXO,
-        ALUsrcB,
+        ALUSrcB,
         ALUSrcAMUXOut
     ); 
 
@@ -372,13 +371,13 @@ module CPU(
     pcToMem IorDMUX(
         PCOut,
         RD,
-        AluOut,
+        ALUOut,
         IorD,
         IorDMUXOut
     );
 
     sign32_5ToReg_desloc ShiftCtrlMUX(
-        se32_5,
+        SE32_5,
         IR15_0[10:6],
         ShiftCtrl,
         ShiftCtrlMUXOut
@@ -388,7 +387,7 @@ module CPU(
         RegB,
         WordCrackerOUT,
         WriteDataCtrl,
-        WriteDataCtrlMUXOutj
+        WriteDataCtrlMUXOut
     );
 
     /* MemControl MemControlMUX(
