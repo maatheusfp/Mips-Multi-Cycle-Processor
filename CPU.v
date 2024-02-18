@@ -162,7 +162,6 @@ module CPU(
     // SignExtend (32 - 5);
     wire SE32_5 [4:0];
 
-    ------------------------------
     // MUXES:
     // IorD:
     wire IorDMUXOut [31:0];
