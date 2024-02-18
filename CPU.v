@@ -116,7 +116,7 @@ module CPU(
 
     // MDROut
     wire MDROut [31:0];
-    wire MDROut [7:0];
+    wire MDROutByte [7:0];
 
     // Word Cracker
     wire WordCrackerOUT [31:0]; // nao lembro qtos bits
@@ -167,7 +167,7 @@ module CPU(
     wire IorDMUXOut [31:0];
 
     // WriteDataCtrlMUX:
-    wire WriteDataCtrlMUXOut [31:0] // nao tenho ctz;
+    wire WriteDataCtrlMUXOut [31:0]; // nao tenho ctz;
 
     // RegDst;
     wire RegDstMUXOut [4:0];
@@ -354,7 +354,7 @@ module CPU(
         RegA,
         RegB,
         IR15_0,
-        EntryCtrl
+        EntryCtrl,
         EntryCtrlMUXOut
     );
 
@@ -553,7 +553,7 @@ module CPU(
         .LoadControl(LoadControl),
         .ALUOp(ALUOp),
         .DivCtrl(DivCtrl),
-        .MultCtrl(MultCtrl)
+        .MultCtrl(MultCtrl),
 
         .reset_out(reset_out)
     );
