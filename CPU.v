@@ -437,7 +437,7 @@ module CPU(
         IR20_16,
         IR15_0, 
         PCOut[31:28],
-        SLOutCIMA,
+        SLOutCIMA
     );
 
     shiftLeft2 ShifLeftBAIXO(
