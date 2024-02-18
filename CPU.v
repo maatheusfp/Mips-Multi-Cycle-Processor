@@ -413,7 +413,9 @@ module CPU(
         MemControlMUXOut
     ); */
 
-    hi HIReg(
+
+
+    /* hi HIReg(
         HiCtrlMUXOut,
         HiCtrl,
         HI
@@ -422,6 +424,22 @@ module CPU(
     lo LOReg(
         LOCtrlMUXOut,
         LoCtrl,
+        LO
+    ); */
+
+    Registrador HiReg(
+        clock,
+        reset,
+        HiCtrl,
+        HiCtrlMUXOut,
+        HI
+    );
+
+    Registrador LOReg(
+        clock,
+        reset,
+        LoCtrl,
+        LOCtrlMUXOut,
         LO
     );
 
