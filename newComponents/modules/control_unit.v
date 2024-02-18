@@ -149,7 +149,7 @@ parameter state_slti1 = 7'd87;
 parameter state_slti2 = 7'd88; 
 parameter state_slti3 = 7'd27;
 parameter state_addiu1 = 7'd28;
-parameter state_addi3_addiu3 = 7'd89
+parameter state_addi3_addiu3 = 7'd89;
 
 parameter state_addiu1 = 7'd29;
 parameter state_addiu2 = 7'd30;
@@ -218,7 +218,7 @@ parameter wait6 = 7'd65;
 parameter state_slt = 7'd66;
 parameter state_slt2 = 7'd86;
 
-parameter state_and_sub_and = 7'd67; // separou state_add_sub_and pq cada um tem um aluOp diferente
+parameter state_add_sub_and = 7'd67; // separou state_add_sub_and pq cada um tem um aluOp diferente
 parameter state_add = 7'd81;
 parameter state_sub = 7'd82;
 parameter state_and = 7'd83;
@@ -295,7 +295,7 @@ always @(posedge clk) begin
         // resetando a pilha
         RegDst <= 3'b010;
         MemtoReg <= 4'b0101;
-        regwrite <= 1;
+        RegWrite <= 1;
     end 
     else begin
         case(state)
@@ -304,7 +304,7 @@ always @(posedge clk) begin
                 IorD <= 3'b000;
                 MemRead_Write <= 0;
                 ALUSrcA <= 0;
-                ALUsrcB <= 2'b01;
+                ALUSrcB <= 2'b01;
                 ALUOp <= 3'b001;
                 state <= state_fetch2;
             end
@@ -347,7 +347,7 @@ always @(posedge clk) begin
                 state <= state_jal2;
             end
             state_jal2: begin
-                ALUCtrl <= 1;
+                ALUOutCtrl <= 1;
                 state <= state_jal3;
             end
             state_jal3: begin 
@@ -500,7 +500,7 @@ always @(posedge clk) begin
             end
             // checar se houve overflow e então ir para o estado de overflow, se não, ir para o estado de escrita (state_add_sub_and)
             state_aluout2: begin // colocando em ALUOut
-                if (overflow == 1)
+                if (Overflow == 1)
                     state <= state_overflow1;
                 else 
                     state <= state_add_sub_and;
@@ -626,7 +626,7 @@ always @(posedge clk) begin
             state_srl2: begin
                 ShiftCtrl <= 2'b10;
                 EntryCtrl <= 2'b01;
-                ShiftOp3 <= 3'011;
+                ShiftOp3 <= 3'b011;
                 state <= state_RDBR;
             end
 
@@ -683,7 +683,7 @@ always @(posedge clk) begin
             end
 
             state_addi2_addiu2: begin
-                if (OPCODE == ADDI && overflow == 1)
+                if (OPCODE == ADDI && Overflow == 1)
                     state <= state_overflow1;
                 
                 else 
@@ -732,28 +732,28 @@ always @(posedge clk) begin
             end
 
             state_beq: begin
-                PCSource <= 2'10;
+                PCSource <= 2'b10;
                 PCWriteCond <= 1;
                 BranchControl <= 2'b10;
                 state <= state_fetch1;
             end
 
             state_bne: begin 
-                PCSource <= 2'10;
+                PCSource <= 2'b10;
                 PCWriteCond <= 1;
                 BranchControl <= 2'b00;
                 state <= state_fetch1;
             end
 
             state_ble: begin
-                PCSource <= 2'10;
+                PCSource <= 2'b10;
                 PCWriteCond <= 1;
                 BranchControl <= 2'b01;
                 state <= state_fetch1;
             end
 
             state_bgt: begin
-                PCSource <= 2'10;
+                PCSource <= 2'b10;
                 PCWriteCond <= 1;
                 BranchControl <= 2'b00;
                 state <= state_fetch1;
@@ -811,12 +811,12 @@ always @(posedge clk) begin
 
             state_load3: begin
                 IorD <= 3'b101;
-                MemWrite_Read <= 0;
+                MemRead_Write <= 0;
                 state <= state_load4;
             end
             
             state_load4: begin
-                MDR <= 1;
+                MDRWrite <= 1;
                 case(OPCODE)
                     LW: begin
                         state <= state_lw;
@@ -825,7 +825,7 @@ always @(posedge clk) begin
                         state <= state_lh;
                     end
                     LB: begin
-                        state <= state_lb.;
+                        state <= state_lb;
                     end
                 endcase
             end
@@ -857,7 +857,7 @@ always @(posedge clk) begin
             state_lui: begin 
                 EntryCtrl <= 2'b00;
                 ShiftCtrl <= 2'b01;
-                ShiftOp3 <= 3'010;
+                ShiftOp3 <= 3'b010;
                 state <= state_RTBR;
             end
 
@@ -883,7 +883,7 @@ always @(posedge clk) begin
             state_store1: begin
                 ALUSrcA <= 1;
                 ALUSrcB <= 2'b10;
-                ALUOp  <= 3'001;
+                ALUOp  <= 3'b001;
                 state <= state_store2;
             end
             
@@ -1009,11 +1009,14 @@ always @(posedge clk) begin
                 PCWrite <= 1;
                 state <= state_fetch1;
             end
-            
-            state_mult: begin
+        endcase
+    end
+end
+endmodule
+            /* state_mult: begin
                 while (counter < )
                 multCtrl
-            end
+            end */
 
 
 
