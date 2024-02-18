@@ -263,7 +263,7 @@ module CPU(
         IR31_26,
         IR25_21,
         IR20_16,
-        IR15_0[10:6]  //Fica faltando o 10_6 pq nao tem no IR pronto
+        IR15_0  //Fica faltando o 10_6 pq nao tem no IR pronto
     );
 
     Banco_reg BR(
