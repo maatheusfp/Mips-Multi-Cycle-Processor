@@ -7,8 +7,8 @@ module overflowToControl_unit(
 
     always @* begin
         case (ignore)
-            1'b0: IgnoreMUXtoUC = 0;
-            1'b1: IgnoreMUXtoUC = Overflow;
+            1'b0: IgnoreMUXtoUC = Overflow ;
+            1'b1: IgnoreMUXtoUC = 0;
             default: IgnoreMUXtoUC = 0; // Valor padrão
         endcase
     end

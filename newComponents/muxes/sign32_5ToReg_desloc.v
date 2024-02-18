@@ -13,7 +13,7 @@ module sign32_5ToReg_desloc(
             2'b00: ShiftCtrlMUXtoRD = se32x5ToShift_ctrlMUX;
             2'b01: ShiftCtrlMUXtoRD = 5'b10000; 
             2'b10: ShiftCtrlMUXtoRD = IR10_6toMUXShiftCtrl;
-            default: ShiftCtrlMUXtoRD = 16'b0; // Valor padrão
+            default: ShiftCtrlMUXtoRD = 5'b0; // Valor padrão
         endcase
     end
 
