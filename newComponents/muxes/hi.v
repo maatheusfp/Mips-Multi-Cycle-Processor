@@ -4,7 +4,7 @@ module hi(
     input wire [31:0] DivtoDivCtrlMUX,
     input wire [31:0] MulttoDivCtrlMUX,
     input wire divCtrl,
-    output reg [1:0] DivCtrlMUXtoHI
+    output reg [31:0] DivCtrlMUXtoHI
 );
 
   always @(*) begin
