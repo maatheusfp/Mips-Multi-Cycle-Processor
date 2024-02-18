@@ -8,8 +8,8 @@ module aToAlu(
 
   always @(*) begin
     case (ALUSrcA)
-      2'b0: ALUSrcAMUXtoALU = AtoALUSrcA;
-      2'b1: ALUSrcAMUXtoALU = PCtoMUX;
+      1'b0: ALUSrcAMUXtoALU = PCtoMUX;
+      1'b1: ALUSrcAMUXtoALU = AtoALUSrcA;
       default: ALUSrcAMUXtoALU = 32'b0; // Default value
     endcase
   end
