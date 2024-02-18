@@ -28,6 +28,7 @@ module CPU(
     wire reset_out;    
     wire Overflow;
     wire ALUSrcA;
+    wire DivZero;
 
     // 2 bits
     wire WriteDataCtrl;
@@ -441,7 +442,7 @@ module CPU(
     );
 
     shiftLeft2 ShifLeftBAIXO(
-        IR15_0,
+        SE16_32,
         SLOutBAIXO
     );
 
@@ -487,8 +488,8 @@ module CPU(
         .FUNCT(IR15_0[5:0]),
 
         .Overflow(Overflow), // nao entendi bem a funcionalidade
-        /* .DivZero(),
-        .GT() */
+        .DivZero(DivZero),
+        .GT(GT),
 
         .IorD(IorD),
         .WriteDataCtrl(WriteDataCtrl),
@@ -506,7 +507,7 @@ module CPU(
 
         .PCWriteCond(PCWriteCond),
         .PCWrite(PCWrite),
-        .MDRWrite(MDRWrite),
+        .MDRwrite(MDRwrite),
         .ENDwrite(ENDwrite),
         .IRwrite(IRwrite),
         .RegWrite(RegWrite),
