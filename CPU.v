@@ -411,7 +411,7 @@ module CPU(
         LO
     ); */
 
-    ula32 ALU(
+    ula32 ULA(
         RegA,
         RegB,
         ALUOp,
