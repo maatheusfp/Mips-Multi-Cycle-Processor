@@ -1,6 +1,5 @@
 // Branch control mux - mux 4x1
 module aluToPc(
-    input wire zero_in_ALU, // zero na ALU
     input wire GTtoBranchMUX,
     input wire LTorZero_toBranchCtrl,
     input wire GTorLT_toBranchCtrl,

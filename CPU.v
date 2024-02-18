@@ -178,7 +178,6 @@ module CPU(
     wire [31:0] reg31;
     wire [31:0] reg29;
     wire [31:0] reg227;
-    wire [31:0] reg4 = 32'd4;
     wire [31:0] reg16;
 
     //saida das portas logicas
@@ -302,7 +301,6 @@ module CPU(
     );
     
     aluToPc BranchCtrlMUX(
-        ZeroULA,
         GT,
         LT,
         LTGTORtoBranchMUX,
