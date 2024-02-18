@@ -67,10 +67,10 @@ module CPU(
     wire ReadData2 [31:0]; 
 
     // Registrador A
-    wire RegA [15:0]; // nao tenho ctz da qtd de bits
+    wire RegA [31:0]; // nao tenho ctz da qtd de bits
 
     // Registrador B 
-    wire RegB [15:0];
+    wire RegB [31:0];
 
     // ULA
     wire ALU [31:0];
