@@ -248,10 +248,11 @@ module CPU(
     );
 
     Memoria MEM_(
+        IorDMUXOut,
         clock,
         reset,
         MemRead_Write,
-        IorDMUXOut, 
+        WriteDataCtrlMUXOut, 
         MemOut
     );
 
