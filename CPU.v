@@ -13,7 +13,7 @@ module CPU(
     wire ENDwrite;
     wire IRwrite;
     wire RegWrite;
-    wire ShiftOp3;
+    wire ShiftOp3 [2:0];
     wire Awrite;
     wire Bwrite;
     wire HiCtrl;
@@ -37,7 +37,7 @@ module CPU(
     wire [1:0] WordCrackerCtrl;
     wire [1:0] BranchControl;
     wire [1:0] PCSource;
-    wire [1:0] ShiftCtrl;
+    wire [2:0] ShiftCtrl;
     wire [1:0] LoadControl;
 
     // 3 bits
@@ -154,6 +154,9 @@ module CPU(
     // Div/MultCtrl:
     wire [31:0] HiCtrlMUXOut;
     wire [31:0] LOCtrlMUXOut; 
+
+    wire [31:0] hi_mult;
+    wire [31:0] lo_mult;
 
     // ALUSrcA/B:
     wire [31:0] ALUSrcAMUXOut;
@@ -376,6 +379,15 @@ module CPU(
         IorDMUXOut
     );
 
+    RegDesloc RDReg(
+        clock,
+        reset,
+        ShiftOp3,
+        ShiftCtrlMUXOut,
+        EntryCtrlMUXOut,
+        RD
+    );
+
     sign32_5ToReg_desloc ShiftCtrlMUX(
         SE32_5,
         IR15_0[10:6],
@@ -486,12 +498,14 @@ module CPU(
         WordCrackerOUT
     );
 
-    /* mult multReg(
+    mult multReg(
         clock,
         reset,
         RegA,
         RegB,
-    ) */
+        hi_mult,
+        lo_mult
+    );
 
     control_unit Control_Unit(
         .clk(clock),
